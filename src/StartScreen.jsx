@@ -4,7 +4,7 @@ import { Grid, Button, Typography } from "@mui/material";
 const StartScreen = ({ onSinglePlayerClick }) => {
   const [clickCount, setClickCount] = useState(0);
   const [imageSrc, setImageSrc] = useState(
-    "https://i.ibb.co/LQz6XdB/Screenshot-2024-10-11-at-4-10-53-PM.png"
+    "https://i.ibb.co/94k5vSW/1451055694065.jpg"
   );
 
   const handleImageClick = () => {
@@ -12,7 +12,7 @@ const StartScreen = ({ onSinglePlayerClick }) => {
       const newCount = prevCount + 1;
       if (newCount === 20) {
         setImageSrc(
-          "https://i.ibb.co/dt8FdzL/Screenshot-2024-10-11-at-4-13-23-PM.png"
+          "https://i.ibb.co/TtcV9C6/Screenshot-2024-10-11-at-4-00-08-PM.png"
         );
       }
       return newCount;
@@ -26,7 +26,7 @@ const StartScreen = ({ onSinglePlayerClick }) => {
       alignItems="center"
       justifyContent="center"
       spacing={2}
-      style={{ minHeight: "100vh" }}
+      style={{ height: "100vh", overflow: "hidden" }}
     >
       <Grid item>
         <Typography
@@ -48,7 +48,7 @@ const StartScreen = ({ onSinglePlayerClick }) => {
           alt="Single Player and Multiplayer"
           onClick={handleImageClick}
           style={{
-            width: "66%",
+            width: "100%",
             maxWidth: "600px",
             height: "auto",
             marginBottom: "16px",

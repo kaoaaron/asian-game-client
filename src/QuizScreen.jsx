@@ -74,7 +74,7 @@ const QuizScreen = ({ people, onBack }) => {
         alignItems="center"
         spacing={2}
         justifyContent="center"
-        style={{ minHeight: "100vh" }}
+        style={{ minHeight: "100vh", overflow: "hidden" }}
       >
         <Typography variant="h5">Quiz Complete!</Typography>
         <Typography variant="h6">
@@ -99,7 +99,7 @@ const QuizScreen = ({ people, onBack }) => {
       alignItems="center"
       spacing={2}
       justifyContent="center"
-      style={{ minHeight: "100vh" }}
+      style={{ minHeight: "100vh", overflow: "hidden" }}
     >
       <Grid item>
         <Card>
@@ -107,7 +107,7 @@ const QuizScreen = ({ people, onBack }) => {
             component="img"
             image={currentPerson.imageUrl}
             alt={currentPerson.name}
-            style={{ objectFit: "contain", height: "600px", width: "600px" }}
+            style={{ objectFit: "contain", height: "600px", width: "100%" }}
           />
           <CardContent style={{ height: "100px" }}>
             {selectedOption && (
@@ -125,7 +125,6 @@ const QuizScreen = ({ people, onBack }) => {
       <Grid item container spacing={2} justifyContent="center">
         {options.map((option) => (
           <Grid item xs={6} sm={3} key={option}>
-            {" "}
             <Button
               variant="contained"
               color={selectedOption === option ? "secondary" : "primary"}
