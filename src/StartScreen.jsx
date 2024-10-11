@@ -4,7 +4,7 @@ import { Grid, Button, Typography } from "@mui/material";
 const StartScreen = ({ onSinglePlayerClick }) => {
   const [clickCount, setClickCount] = useState(0);
   const [imageSrc, setImageSrc] = useState(
-    "https://i.ibb.co/94k5vSW/1451055694065.jpg"
+    "https://i.ibb.co/LQz6XdB/Screenshot-2024-10-11-at-4-10-53-PM.png"
   );
 
   const handleImageClick = () => {
@@ -12,7 +12,7 @@ const StartScreen = ({ onSinglePlayerClick }) => {
       const newCount = prevCount + 1;
       if (newCount === 20) {
         setImageSrc(
-          "https://i.ibb.co/TtcV9C6/Screenshot-2024-10-11-at-4-00-08-PM.png"
+          "https://i.ibb.co/dt8FdzL/Screenshot-2024-10-11-at-4-13-23-PM.png"
         );
       }
       return newCount;
