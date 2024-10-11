@@ -1,92 +1,72 @@
-import React, { useEffect, useState } from "react";
-import {
-  Container,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  Grid,
-} from "@mui/material";
+import React, { useState } from "react";
+import { Container, Box } from "@mui/material";
+import StartScreen from "./StartScreen";
+import FilterOptions from "./FilterOptions";
+import QuizScreen from "./QuizScreen";
 
 const App = () => {
-  const [person, setPerson] = useState(null);
+  const [screen, setScreen] = useState("start");
+  const [filters, setFilters] = useState({
+    numberOfPeople: 30,
+    gender: "both",
+  });
+  const [people, setPeople] = useState([]);
 
-  const fetchRandomPerson = async () => {
-    try {
-      const response = await fetch("https://asianapi.onrender.com/random");
-      const data = await response.json();
-      setPerson(data[0]);
-    } catch (error) {}
+  const handleStartSinglePlayer = () => {
+    setScreen("filters");
   };
 
-  useEffect(() => {
-    fetchRandomPerson();
-  }, []);
+  const handleFilterChange = (e) => {
+    setFilters({
+      ...filters,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const fetchPeopleData = async () => {
+    const { numberOfPeople, gender } = filters;
+    const genderFilter = gender === "both" ? "" : `&gender=${gender}`;
+    const query = `/people?limit=${numberOfPeople}${genderFilter}`;
+
+    try {
+      const response = await fetch(`https://asianapi.onrender.com${query}`);
+      const data = await response.json();
+      setPeople(data);
+      setScreen("quiz");
+    } catch (error) {
+      console.error("Error fetching people data:", error);
+    }
+  };
+
+  const handleBackToStart = () => {
+    setScreen("start");
+  };
 
   return (
-    <Container>
-      <Typography variant="h4" align="center" gutterBottom>
-        Asian Person
-      </Typography>
-      {person ? (
-        <Grid container justifyContent="center">
-          <Grid item xs={12} sm={8} md={6}>
-            <Card>
-              <CardMedia
-                component="img"
-                image={person.imageUrl}
-                alt={person.name}
-                style={{ objectFit: "contain", height: "auto" }}
-              />
-              <CardContent>
-                <Typography variant="h5" gutterBottom>
-                  {person.name}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Description:</strong> {person.description || "N/A"}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Occupation:</strong> {person.occupation || "N/A"}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Ethnicity:</strong> {person.ethnicity || "N/A"}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Native Name:</strong> {person.nativeName || "N/A"}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Birth Date:</strong> {person.birthDate || "N/A"}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Birth Place:</strong> {person.birthPlace || "N/A"}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Death Date:</strong> {person.deathDate || "N/A"}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Notable Work:</strong> {person.notableWork || "N/A"}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Gender:</strong> {person.gender || "N/A"}
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={fetchRandomPerson}
-                  style={{ marginTop: "16px" }}
-                >
-                  Generate New Asian
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-      ) : (
-        <Typography variant="h6" align="center">
-          Loading...
-        </Typography>
-      )}
+    <Container
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+      }}
+    >
+      <Box sx={{ width: "100%", maxWidth: 600 }}>
+        {" "}
+        {screen === "start" && (
+          <StartScreen onSinglePlayerClick={handleStartSinglePlayer} />
+        )}
+        {screen === "filters" && (
+          <FilterOptions
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onStartQuiz={fetchPeopleData}
+          />
+        )}
+        {screen === "quiz" && (
+          <QuizScreen people={people} onBack={handleBackToStart} />
+        )}
+      </Box>
     </Container>
   );
 };
