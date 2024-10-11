@@ -13,3 +13,5 @@ single player button should open up a menu with game options. for now lets just 
 once these options are selected, lets make a ui with the image that we grab randomly. and randomize 3 options together with the correct ethnicity.
 
 this will be a good start
+
+also add room on the options screen to allow the user to select an age range they want to guess. maybe we could use a mui slider or something. prob need updates in the backend so we can filter for this
