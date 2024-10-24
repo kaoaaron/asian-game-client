@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Container, Box } from "@mui/material";
+import { Container, Box, useMediaQuery } from "@mui/material";
 import StartScreen from "./StartScreen";
 import FilterOptions from "./FilterOptions";
 import QuizScreen from "./QuizScreen";
+import ParallaxLanding from "./components/ParallaxLanding/ParallaxLanding";
 
 const App = () => {
   const [screen, setScreen] = useState("start");
@@ -11,6 +12,7 @@ const App = () => {
     gender: "both",
   });
   const [people, setPeople] = useState([]);
+  const [zoomFinished, setZoomFinished] = useState(false);
 
   const handleStartSinglePlayer = () => {
     setScreen("filters");
@@ -42,32 +44,69 @@ const App = () => {
     setScreen("start");
   };
 
+  const isMobile = useMediaQuery("(max-width:600px)");
+
   return (
-    <Container
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-      }}
-    >
-      <Box sx={{ width: "100%", maxWidth: 600 }}>
-        {" "}
-        {screen === "start" && (
-          <StartScreen onSinglePlayerClick={handleStartSinglePlayer} />
-        )}
-        {screen === "filters" && (
-          <FilterOptions
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onStartQuiz={fetchPeopleData}
-          />
-        )}
-        {screen === "quiz" && (
-          <QuizScreen people={people} onBack={handleBackToStart} />
-        )}
-      </Box>
-    </Container>
+    <>
+      <style>{`body { margin: 0; background-color: black; color: white; }`}</style>{" "}
+      {zoomFinished ? (
+        <Container
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "100vh",
+            width: "100vw",
+          }}
+        >
+          <Box sx={{ width: "100%", maxWidth: 600 }}>
+            {screen === "filters" ? (
+              <FilterOptions
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                onStartQuiz={fetchPeopleData}
+              />
+            ) : screen === "quiz" ? (
+              <QuizScreen people={people} onBack={handleBackToStart} />
+            ) : (
+              <StartScreen onSinglePlayerClick={handleStartSinglePlayer} />
+            )}
+          </Box>
+        </Container>
+      ) : isMobile ? (
+        <Container
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "100vh",
+          }}
+        >
+          <Box sx={{ width: "100%", maxWidth: 600 }}>
+            {screen === "start" && (
+              <StartScreen onSinglePlayerClick={handleStartSinglePlayer} />
+            )}
+            {screen === "filters" && (
+              <FilterOptions
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                onStartQuiz={fetchPeopleData}
+              />
+            )}
+            {screen === "quiz" && (
+              <QuizScreen people={people} onBack={handleBackToStart} />
+            )}
+          </Box>
+        </Container>
+      ) : (
+        <ParallaxLanding
+          onZoomComplete={() => {
+            setZoomFinished(true);
+            setScreen("filters");
+          }}
+        />
+      )}
+    </>
   );
 };
 
