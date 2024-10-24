@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import styled, { keyframes, css } from "styled-components";
 import background from "../../assets/images/landing/background.png";
 import foregroundtrees from "../../assets/images/landing/foregroundtrees.png";
-import asiansign from "../../assets/images/landing/asiansign.png";
+import multiplayersign from "../../assets/images/landing/multiplayersign.png";
+import multiplayersignhover from "../../assets/images/landing/multiplayersignhover.png";
 import playsign from "../../assets/images/landing/playsign.png";
 import playsignhover from "../../assets/images/landing/playsignhover.png";
 import rooftop from "../../assets/images/landing/rooftop.png";
@@ -64,6 +65,16 @@ const ImageContainer = styled.div`
     left: 55%;
     width: 15vw;
     height: 14vh;
+    z-index: 6;
+    cursor: pointer;
+  }
+
+  #multiplayerbuttondiv {
+    position: absolute;
+    top: 71%;
+    left: 42%;
+    width: 11vw;
+    height: 8vh;
     z-index: 6;
     cursor: pointer;
   }
@@ -135,6 +146,7 @@ const ImageContainer = styled.div`
 
 const ParallaxLanding = ({ onZoomComplete }) => {
   const [hovered, setHovered] = useState(false);
+  const [mpHovered, setMpHovered] = useState(false);
   const [zoomed, setZoomed] = useState(false);
   const [transformOrigin, setTransformOrigin] = useState("0% 0%");
   const [doorOpened, setDoorOpened] = useState(false);
@@ -197,7 +209,15 @@ const ParallaxLanding = ({ onZoomComplete }) => {
           <div id="foregroundtreesdiv2" onClick={handleForegroundTreesClick} />
         </>
       )}
-      <img id="panda" src={asiansign} alt="Asian Sign" />
+      <div
+        id="multiplayerbuttondiv"
+        onMouseEnter={() => setMpHovered(true)}
+        onMouseLeave={() => setMpHovered(false)}
+      />
+      <img id="panda" src={multiplayersign} alt="Multiplayer Sign" />
+      {mpHovered && (
+        <img id="panda" src={multiplayersignhover} alt="Multiplayer Sign" />
+      )}
       <img id="playsign" src={playsign} alt="Play Sign" />
       <div
         id="playbuttondiv"
