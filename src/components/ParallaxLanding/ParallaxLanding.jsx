@@ -10,7 +10,9 @@ import dooropen from "../../assets/images/landing/dooropen.png";
 import backtree from "../../assets/images/landing/backtree.png";
 import panda from "../../assets/images/landing/panda.png";
 import jiyoung from "../../assets/images/landing/jiyoung.png";
+import embarassed from "../../assets/images/landing/embarassed.png";
 
+// Keyframe for zoom animation
 const zoomIn = keyframes`
   from {
     transform: scale(1);
@@ -59,16 +61,36 @@ const ImageContainer = styled.div`
 
   #playsignhover {
     z-index: 5;
-    display: block; /* Always display when condition met */
+    display: block;
   }
 
-  #hover-trigger {
+  #playbuttondiv {
     position: absolute;
     top: 85%;
     left: 55%;
     width: 15vw;
     height: 14vh;
     z-index: 6;
+    cursor: pointer;
+  }
+
+  #foregroundtreesdiv1 {
+    position: absolute;
+    bottom: 0%;
+    left: 0%;
+    width: 39vw;
+    height: 26vh;
+    z-index: 7;
+    cursor: pointer;
+  }
+
+  #foregroundtreesdiv2 {
+    position: absolute;
+    bottom: 0%;
+    left: 0%;
+    width: 18vw;
+    height: 90vh;
+    z-index: 7;
     cursor: pointer;
   }
 
@@ -80,6 +102,19 @@ const ImageContainer = styled.div`
     height: 13vh;
     z-index: 7;
   }
+
+  #foregroundtrees {
+    z-index: 4;
+  }
+
+  #embarassed {
+    z-index: 3;
+    position: absolute;
+    bottom: 0%;
+    left: 0%;
+    height: 30vw;
+    width: auto;
+  }
 `;
 
 const ParallaxLanding = ({ onZoomComplete }) => {
@@ -87,6 +122,7 @@ const ParallaxLanding = ({ onZoomComplete }) => {
   const [zoomed, setZoomed] = useState(false);
   const [transformOrigin, setTransformOrigin] = useState("0% 0%");
   const [doorOpened, setDoorOpened] = useState(false);
+  const [foregroundTreesClicks, setForegroundTreesClicks] = useState(0);
   const doorRef = useRef(null);
 
   const handleClick = () => {
@@ -99,6 +135,10 @@ const ParallaxLanding = ({ onZoomComplete }) => {
       setZoomed(true);
       setDoorOpened(true);
     }
+  };
+
+  const handleForegroundTreesClick = () => {
+    setForegroundTreesClicks((prev) => prev + 1);
   };
 
   useEffect(() => {
@@ -114,11 +154,22 @@ const ParallaxLanding = ({ onZoomComplete }) => {
   return (
     <ImageContainer zoom={zoomed} style={{ transformOrigin }}>
       <img src={background} alt="Background" />
-      <img src={foregroundtrees} alt="Foreground Trees" />
+      {foregroundTreesClicks < 20 && (
+        <>
+          <img
+            id="foregroundtrees"
+            src={foregroundtrees}
+            alt="Foreground Trees"
+            onClick={handleForegroundTreesClick}
+          />
+          <div id="foregroundtreesdiv1" onClick={handleForegroundTreesClick} />
+          <div id="foregroundtreesdiv2" onClick={handleForegroundTreesClick} />
+        </>
+      )}
       <img id="panda" src={asiansign} alt="Asian Sign" />
       <img id="playsign" src={playsign} alt="Play Sign" />
       <div
-        id="hover-trigger"
+        id="playbuttondiv"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         onClick={handleClick}
@@ -133,6 +184,7 @@ const ParallaxLanding = ({ onZoomComplete }) => {
       <img id="rooftop" src={rooftop} alt="Rooftop" />
       <img src={backtree} alt="Back Tree" />
       <img id="panda" src={panda} alt="Panda" />
+      <img id="embarassed" src={embarassed} alt="embarassed" />
       {false && <img id="jiyoung" src={jiyoung} alt="Jiyoung" />}
     </ImageContainer>
   );
