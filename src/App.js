@@ -44,7 +44,7 @@ const App = () => {
     setScreen("start");
   };
 
-  const isMobile = useMediaQuery("(max-width:600px)");
+  const isMobile = useMediaQuery("(max-width:980px)");
 
   return (
     <>

@@ -11,8 +11,9 @@ import backtree from "../../assets/images/landing/backtree.png";
 import panda from "../../assets/images/landing/panda.png";
 import jiyoung from "../../assets/images/landing/jiyoung.png";
 import embarassed from "../../assets/images/landing/embarassed.png";
+import aaron from "../../assets/images/landing/aaron.png";
+import AnimatedTitle from "./AnimatedTitle";
 
-// Keyframe for zoom animation
 const zoomIn = keyframes`
   from {
     transform: scale(1);
@@ -38,13 +39,6 @@ const ImageContainer = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
-  }
-
-  #jiyoung {
-    z-index: 1;
-    transform: rotate(30deg);
-    top: -320px;
-    right: -800px;
   }
 
   #rooftop {
@@ -115,6 +109,28 @@ const ImageContainer = styled.div`
     height: 30vw;
     width: auto;
   }
+
+  #jiyoung {
+    position: absolute;
+    right: 16vw;
+    top: ${({ hovered }) => (hovered ? "17vh" : "44vh")};
+    width: 25vw;
+    height: 40vh;
+    transform-origin: bottom right;
+    transform: rotate(25deg) translateX(-10%) translateY(10%);
+    transition: top 1.5s ease-in-out; /* Smooth transition effect */
+  }
+
+  #aaron {
+    position: absolute;
+    right: 16vw;
+    top: ${({ hovered }) => (hovered ? "17vh" : "44vh")};
+    width: 25vw;
+    height: 40vh;
+    transform-origin: bottom right;
+    transform: rotate(25deg) translateX(-10%) translateY(10%);
+    transition: top 1.5s ease-in-out; /* Smooth transition effect */
+  }
 `;
 
 const ParallaxLanding = ({ onZoomComplete }) => {
@@ -123,6 +139,7 @@ const ParallaxLanding = ({ onZoomComplete }) => {
   const [transformOrigin, setTransformOrigin] = useState("0% 0%");
   const [doorOpened, setDoorOpened] = useState(false);
   const [foregroundTreesClicks, setForegroundTreesClicks] = useState(0);
+  const [showImages, setShowImages] = useState(false);
   const doorRef = useRef(null);
 
   const handleClick = () => {
@@ -146,14 +163,28 @@ const ParallaxLanding = ({ onZoomComplete }) => {
       const timer = setTimeout(() => {
         onZoomComplete();
       }, 2000);
-
       return () => clearTimeout(timer);
     }
   }, [zoomed, onZoomComplete]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      const aspectRatio = window.innerWidth / window.innerHeight;
+      setShowImages(aspectRatio > 0.5 && aspectRatio < 2.5);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
-    <ImageContainer zoom={zoomed} style={{ transformOrigin }}>
+    <ImageContainer zoom={zoomed} hovered={hovered} style={{ transformOrigin }}>
       <img src={background} alt="Background" />
+      <AnimatedTitle />
       {foregroundTreesClicks < 20 && (
         <>
           <img
@@ -182,10 +213,15 @@ const ParallaxLanding = ({ onZoomComplete }) => {
         <img src={dooropen} id="panda" alt="Door Open" />
       )}
       <img id="rooftop" src={rooftop} alt="Rooftop" />
+      {showImages &&
+        (foregroundTreesClicks >= 20 ? (
+          <img id="jiyoung" src={jiyoung} alt="Jiyoung" />
+        ) : (
+          <img id="aaron" src={aaron} alt="Aaron" />
+        ))}
       <img src={backtree} alt="Back Tree" />
       <img id="panda" src={panda} alt="Panda" />
-      <img id="embarassed" src={embarassed} alt="embarassed" />
-      {false && <img id="jiyoung" src={jiyoung} alt="Jiyoung" />}
+      {showImages && <img id="embarassed" src={embarassed} alt="Embarassed" />}
     </ImageContainer>
   );
 };
