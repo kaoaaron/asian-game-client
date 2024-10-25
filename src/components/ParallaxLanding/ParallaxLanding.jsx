@@ -46,6 +46,7 @@ const ImageContainer = styled.div`
     z-index: 2;
   }
 
+  #multiplayersign,
   #panda {
     z-index: 3;
   }
@@ -106,6 +107,16 @@ const ImageContainer = styled.div`
     width: 8vw;
     height: 13vh;
     z-index: 7;
+  }
+
+  #panda-div {
+    position: absolute;
+    bottom: 0%;
+    right: 0%;
+    width: 26vw;
+    height: 30vh;
+    z-index: 9;
+    cursor: pointer;
   }
 
   #foregroundtrees {
@@ -214,9 +225,13 @@ const ParallaxLanding = ({ onZoomComplete }) => {
         onMouseEnter={() => setMpHovered(true)}
         onMouseLeave={() => setMpHovered(false)}
       />
-      <img id="panda" src={multiplayersign} alt="Multiplayer Sign" />
+      <img id="multiplayersign" src={multiplayersign} alt="Multiplayer Sign" />
       {mpHovered && (
-        <img id="panda" src={multiplayersignhover} alt="Multiplayer Sign" />
+        <img
+          id="multiplayersign"
+          src={multiplayersignhover}
+          alt="Multiplayer Sign"
+        />
       )}
       <img id="playsign" src={playsign} alt="Play Sign" />
       <div
@@ -241,6 +256,7 @@ const ParallaxLanding = ({ onZoomComplete }) => {
         ))}
       <img src={backtree} alt="Back Tree" />
       <img id="panda" src={panda} alt="Panda" />
+      <div id="panda-div" />
       {showImages && <img id="embarassed" src={embarassed} alt="Embarassed" />}
     </ImageContainer>
   );
