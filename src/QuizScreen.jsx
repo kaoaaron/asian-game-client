@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  Grid,
-  Button,
-  Typography,
-  Card,
-  CardContent,
-  CardMedia,
-} from "@mui/material";
+import { Stack, Button, Typography, Card, CardMedia, Box } from "@mui/material";
+import { styled } from "@mui/system";
 
 const ethnicities = [
   "Chinese",
@@ -19,12 +13,34 @@ const ethnicities = [
   "Vietnamese",
 ];
 
+const ColoredButton = styled(Button)(({ answerStatus }) => ({
+  transition: "background-color 0.3s ease-in-out",
+  backgroundColor:
+    answerStatus === "correct"
+      ? "green"
+      : answerStatus === "wrong"
+      ? "red"
+      : "navyblue",
+  color: "white",
+  flex: 1,
+  height: "100%",
+  "&:hover": {
+    backgroundColor:
+      answerStatus === "correct"
+        ? "darkgreen"
+        : answerStatus === "wrong"
+        ? "darkred"
+        : "blue",
+  },
+}));
+
 const QuizScreen = ({ people, onBack }) => {
   const [currentPersonIndex, setCurrentPersonIndex] = useState(0);
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
+  const [isDisabled, setIsDisabled] = useState(false);
   const totalQuestions = people.length;
 
   const currentPerson = people[currentPersonIndex];
@@ -48,19 +64,28 @@ const QuizScreen = ({ people, onBack }) => {
   };
 
   const handleOptionClick = (option) => {
+    if (isDisabled) return;
+
     setSelectedOption(option);
+    setIsDisabled(true);
+
     if (option === currentPerson.ethnicity) {
       setIsCorrect(true);
       setScore((prevScore) => prevScore + 1);
     } else {
       setIsCorrect(false);
     }
+
+    setTimeout(() => {
+      setIsDisabled(false);
+      handleNextPerson();
+    }, 2000);
   };
 
   const handleNextPerson = () => {
-    setSelectedOption(null);
     setIsCorrect(null);
-    setCurrentPersonIndex(currentPersonIndex + 1);
+    setSelectedOption(null);
+    setCurrentPersonIndex((prevIndex) => prevIndex + 1);
   };
 
   const scorePercentage =
@@ -68,14 +93,7 @@ const QuizScreen = ({ people, onBack }) => {
 
   if (currentPersonIndex >= totalQuestions) {
     return (
-      <Grid
-        container
-        direction="column"
-        alignItems="center"
-        spacing={2}
-        justifyContent="center"
-        style={{ minHeight: "100vh", overflow: "hidden" }}
-      >
+      <Stack spacing={2} alignItems="center">
         <Typography variant="h5">Quiz Complete!</Typography>
         <Typography variant="h6">
           Your Score: {score}/{totalQuestions} ({scorePercentage}%)
@@ -88,83 +106,109 @@ const QuizScreen = ({ people, onBack }) => {
         >
           Back to Start Game
         </Button>
-      </Grid>
+      </Stack>
     );
   }
 
   return (
-    <Grid
-      container
-      direction="column"
-      alignItems="center"
+    <Stack
       spacing={2}
-      justifyContent="center"
-      style={{ minHeight: "100vh", overflow: "hidden" }}
+      alignItems="center"
+      style={{
+        width: "100%",
+        height: "100vh",
+        overflow: "hidden",
+      }}
     >
-      <Grid item>
-        <Card>
-          <CardMedia
-            component="img"
-            image={currentPerson.imageUrl}
-            alt={currentPerson.name}
-            style={{ objectFit: "contain", height: "600px", width: "100%" }}
-          />
-          <CardContent style={{ height: "100px" }}>
-            {selectedOption && (
-              <>
-                <Typography variant="h6">{currentPerson.name}</Typography>
-                <Typography variant="body1">
-                  Occupation: {currentPerson.occupation}
-                </Typography>
-              </>
-            )}
-          </CardContent>
-        </Card>
-      </Grid>
+      <Stack
+        direction="row"
+        spacing={2}
+        alignItems="flex-start"
+        sx={{ width: "100%" }}
+      >
+        <Box sx={{ flex: 2 }}>
+          <Card
+            sx={{
+              height: { xs: "65vh", sm: "80vh" },
+              overflow: "hidden",
+            }}
+          >
+            <CardMedia
+              component="img"
+              image={currentPerson.imageUrl}
+              alt={currentPerson.name}
+              style={{
+                height: "100%",
+                width: "100%",
+                objectFit: "contain",
+              }}
+            />
+          </Card>
+        </Box>
+        <Box
+          sx={{
+            flex: 1,
+            height: "50vh",
+            backgroundColor: "#f5f5f5",
+            textAlign: "center",
+            display: { xs: "none", sm: "flex" },
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          {selectedOption && (
+            <>
+              <Typography variant="h6" color="text.primary">
+                {currentPerson.name}
+              </Typography>
+              <Typography variant="body1" color="text.primary">
+                Occupation: {currentPerson.occupation}
+              </Typography>
+            </>
+          )}
+        </Box>
+      </Stack>
 
-      <Grid item container spacing={2} justifyContent="center">
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={1}
+        sx={{ width: "100%", flex: 1 }}
+      >
         {options.map((option) => (
-          <Grid item xs={6} sm={3} key={option}>
-            <Button
+          <Stack
+            key={option}
+            sx={{
+              flex: { xs: 1, sm: 0.5 },
+              height: { xs: "calc(100vh / 5 - 8px)", sm: "100%" },
+            }}
+          >
+            <ColoredButton
               variant="contained"
-              color={selectedOption === option ? "secondary" : "primary"}
+              answerStatus={
+                selectedOption === option && isCorrect
+                  ? "correct"
+                  : selectedOption === option &&
+                    !isCorrect &&
+                    option === selectedOption
+                  ? "wrong"
+                  : selectedOption && option === currentPerson.ethnicity
+                  ? "correct"
+                  : null
+              }
               onClick={() => handleOptionClick(option)}
-              disabled={!!selectedOption}
-              style={{ width: "100%", padding: "16px", fontSize: "16px" }}
+              style={{
+                width: "100%",
+                padding: "8px",
+                fontSize: "1rem",
+                pointerEvents: isDisabled ? "none" : "auto",
+              }}
             >
               {option}
-            </Button>
-          </Grid>
+            </ColoredButton>
+          </Stack>
         ))}
-      </Grid>
-
-      <Grid
-        item
-        style={{
-          minHeight: "100px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        {selectedOption && (
-          <>
-            <Typography variant="h6">
-              {isCorrect
-                ? "Correct!"
-                : `Wrong! The correct answer was ${currentPerson.ethnicity}.`}
-            </Typography>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleNextPerson}
-            >
-              Next
-            </Button>
-          </>
-        )}
-      </Grid>
-    </Grid>
+      </Stack>
+    </Stack>
   );
 };
 

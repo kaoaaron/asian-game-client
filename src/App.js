@@ -48,31 +48,21 @@ const App = () => {
 
   return (
     <>
-      <style>{`body { margin: 0; background-color: black; color: white; }`}</style>{" "}
+      <style>{`body { margin: 0; background-color: black; color: white;  }`}</style>{" "}
       {zoomFinished ? (
-        <Container
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            minHeight: "100vh",
-            width: "100vw",
-          }}
-        >
-          <Box sx={{ width: "100%", maxWidth: 600 }}>
-            {screen === "filters" ? (
-              <FilterOptions
-                filters={filters}
-                onFilterChange={handleFilterChange}
-                onStartQuiz={fetchPeopleData}
-              />
-            ) : screen === "quiz" ? (
-              <QuizScreen people={people} onBack={handleBackToStart} />
-            ) : (
-              <StartScreen onSinglePlayerClick={handleStartSinglePlayer} />
-            )}
-          </Box>
-        </Container>
+        <Box sx={{ width: "100%" }}>
+          {screen === "filters" ? (
+            <FilterOptions
+              filters={filters}
+              onFilterChange={handleFilterChange}
+              onStartQuiz={fetchPeopleData}
+            />
+          ) : screen === "quiz" ? (
+            <QuizScreen people={people} onBack={handleBackToStart} />
+          ) : (
+            <StartScreen onSinglePlayerClick={handleStartSinglePlayer} />
+          )}
+        </Box>
       ) : isMobile ? (
         <Container
           style={{
