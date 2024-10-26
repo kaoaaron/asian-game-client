@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Stack, Button, Typography, Card, CardMedia, Box } from "@mui/material";
+import {
+  Stack,
+  Button,
+  Typography,
+  Card,
+  CardMedia,
+  Box,
+  LinearProgress,
+} from "@mui/material";
 import { styled } from "@mui/system";
 
 const ethnicities = [
@@ -120,6 +128,11 @@ const QuizScreen = ({ people, onBack }) => {
         overflow: "hidden",
       }}
     >
+      <LinearProgress
+        variant="determinate"
+        value={Math.floor((currentPersonIndex / totalQuestions) * 100)}
+        style={{ height: 8, width: "100%", borderRadius: 5 }}
+      />
       <Stack
         direction="row"
         spacing={2}
