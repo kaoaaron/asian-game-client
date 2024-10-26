@@ -13,6 +13,7 @@ import panda from "../../assets/images/landing/panda.png";
 import jiyoung from "../../assets/images/landing/jiyoung.png";
 import embarassed from "../../assets/images/landing/embarassed.png";
 import aaron from "../../assets/images/landing/aaron.png";
+import eataaron from "../../assets/images/landing/eataaron.png";
 import developerImage from "../../assets/images/landing/aaron.png";
 import AnimatedTitle from "./AnimatedTitle";
 
@@ -118,6 +119,15 @@ const ImageContainer = styled.div`
     height: 30vh;
     z-index: 9;
     cursor: pointer;
+  }
+
+  #food-aaron {
+    position: absolute;
+    bottom: -12px;
+    right: -3%;
+    width: 35vw;
+    height: 75vh;
+    z-index: 9;
   }
 
   #foregroundtrees {
@@ -317,7 +327,9 @@ const ParallaxLanding = ({ onZoomComplete }) => {
         <img src={backtree} alt="Back Tree" />
         <img id="panda" src={panda} alt="Panda" />
         <div id="panda-div" />
-
+        {foregroundTreesClicks >= 10 && (
+          <img id="food-aaron" src={eataaron} alt="food-aaron" style={{}} />
+        )}
         {showImages && (
           <img id="embarassed" src={embarassed} alt="Embarassed" />
         )}
