@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import developerImage from "../../assets/images/landing/aaron.png";
+import developerImage from "../../assets/images/landing/aaronprofile.png";
 
 const TextSectionContainer = styled.div`
   min-height: 100vh;
@@ -15,8 +15,76 @@ const TextSectionContainer = styled.div`
 `;
 
 const AboutSection = styled.div`
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
   text-align: center;
+
+  h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+  }
+`;
+
+const VisitorCountSection = styled.div`
+  text-align: center;
+`;
+
+const VisitorCount = styled.div`
+  font-size: 4rem;
+  font-weight: bold;
+  color: #ffb300;
+  padding: 1rem;
+  border: 2px solid #ffb300;
+  border-radius: 10px;
+  background-color: rgba(255, 179, 0, 0.1);
+`;
+
+const VisitorCountLabel = styled.h3`
+  font-size: 1.5rem; // Adjust label size
+  color: #fff; // Color of the label
+  margin: 0.5rem 0; // Margin for spacing
+`;
+
+const DonationSection = styled.div`
+  margin-top: 3rem;
+  text-align: center;
+
+  h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+  }
+`;
+
+const DonationForm = styled.form`
+  margin-top: 1rem;
+`;
+
+const DonateButton = styled.input`
+  width: 200px;
+  height: auto;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:focus {
+    outline: 2px solid #ffb300;
+    outline-offset: 4px;
+  }
 `;
 
 const DeveloperSection = styled.div`
@@ -27,8 +95,8 @@ const DeveloperSection = styled.div`
 `;
 
 const DeveloperImage = styled.img`
-  width: 150px;
-  height: 150px;
+  width: 250px;
+  height: 250px;
   border-radius: 50%;
   margin-bottom: 1rem;
 `;
@@ -41,30 +109,124 @@ const DeveloperName = styled.h2`
 const DeveloperDescription = styled.p`
   font-size: 1.2rem;
   max-width: 600px;
+  margin: 0;
 `;
 
-const TextSection = () => (
-  <TextSectionContainer>
-    <AboutSection>
-      <h2>About</h2>
-      <p>
-        Lorem
-        Ipsum，也称乱数假文或者哑元文本，是印刷及排版领域所常用的虚拟文字。
-        由于曾经一台匿名的打印机刻意打乱了一盒印刷字体从而造出一本字体样品书，
-        Lorem Ipsum从西元15世纪起就被作为此领域的标准文本使用。
-      </p>
-    </AboutSection>
+const DevelopersRow = styled.div`
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+`;
 
-    <DeveloperSection>
-      <DeveloperImage src={developerImage} alt="Developer" />
-      <DeveloperName>Aaron Kao</DeveloperName>
-      <DeveloperDescription>
-        以下展示了自1500世纪以来使用的标准Lorem Ipsum段落， 西塞罗笔下“de
-        Finibus Bonorum et Malorum”章节1.10.32 ，
-        1.10.33的原著作，以及其1914年译自H. Rackham的英文版本。
-      </DeveloperDescription>
-    </DeveloperSection>
-  </TextSectionContainer>
+const DevelopersHeader = styled.h2`
+  font-size: 2.5rem;
+  margin: 2rem 0 1rem;
+  text-align: center;
+`;
+
+const DeveloperProfile = ({ image, name, description }) => (
+  <DeveloperSection>
+    <DeveloperImage src={image} alt={name} />
+    <DeveloperName>{name}</DeveloperName>
+    <DeveloperDescription>{description}</DeveloperDescription>
+  </DeveloperSection>
 );
+
+const Developers = () => (
+  <>
+    <DevelopersHeader>Developers</DevelopersHeader>
+    <DevelopersRow>
+      <DeveloperProfile
+        image={developerImage}
+        name="Aaron Kao"
+        description="Principal Developer"
+      />
+    </DevelopersRow>
+  </>
+);
+
+const TextSection = () => {
+  const [visitorCount, setVisitorCount] = useState(0);
+
+  useEffect(() => {
+    const fetchVisitorCount = async () => {
+      try {
+        const response = await fetch(
+          "https://api.guesstheasian.com/visitor-count"
+        );
+        const data = await response.json();
+        setVisitorCount(data.uniqueVisitorCount);
+      } catch (error) {
+        console.error("Error fetching visitor count:", error);
+      }
+    };
+
+    fetchVisitorCount();
+  }, []);
+
+  return (
+    <TextSectionContainer>
+      <AboutSection>
+        <h2>About</h2>
+        <p>
+          Welcome to <strong>Guess the Asian Ethnicity</strong>, a game designed
+          to help people recognize and appreciate the diverse characteristics
+          that define Asian cultures.
+        </p>
+        <p>
+          Asia is home to a diversity of ethnicities, each with unique
+          histories, languages, and traditions. We aim to break stereotypes and
+          foster a deeper understanding of the subtle differences that make each
+          ethnicity distinct.
+        </p>
+        <p>
+          We hope this experience will expand your knowledge and appreciation
+          for the many cultures across Asia. Get ready to challenge yourself,
+          and let’s celebrate diversity together!
+        </p>
+      </AboutSection>
+
+      <VisitorCountSection>
+        <VisitorCountLabel>Unique Visitors</VisitorCountLabel>
+        <VisitorCount>{visitorCount}</VisitorCount>
+      </VisitorCountSection>
+
+      <Developers />
+
+      <DonationSection>
+        <h2>Support Our Project</h2>
+        <p>
+          Your support helps us enhance this project and maintain an ad-free
+          experience. We cover server costs ourselves, so please consider making
+          a donation to keep us going!
+        </p>
+
+        <DonationForm
+          action="https://www.paypal.com/donate"
+          method="post"
+          target="_top"
+        >
+          <input type="hidden" name="business" value="33BP42T8YNCVU" />
+          <input type="hidden" name="no_recurring" value="1" />
+          <input type="hidden" name="currency_code" value="USD" />
+          <DonateButton
+            type="image"
+            src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"
+            name="submit"
+            title="PayPal - The safer, easier way to pay online!"
+            alt="Donate with PayPal button"
+          />
+          <img
+            alt=""
+            border="0"
+            src="https://www.paypal.com/en_CA/i/scr/pixel.gif"
+            width="1"
+            height="1"
+          />
+        </DonationForm>
+      </DonationSection>
+    </TextSectionContainer>
+  );
+};
 
 export default TextSection;
