@@ -167,7 +167,7 @@ const TextSection = () => {
   return (
     <TextSectionContainer>
       <AboutSection>
-        <h2>About</h2>
+        <h2>About Us</h2>
         <p>
           Welcome to <strong>Guess the Asian Ethnicity</strong>, a game designed
           to help people recognize and appreciate the diverse characteristics
