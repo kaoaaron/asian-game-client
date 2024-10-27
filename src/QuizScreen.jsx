@@ -149,7 +149,6 @@ const QuizScreen = ({ people, onBack }) => {
             <CardMedia
               component="img"
               image={currentPerson.imageUrl}
-              alt={currentPerson.name}
               style={{
                 height: "100%",
                 width: "100%",
