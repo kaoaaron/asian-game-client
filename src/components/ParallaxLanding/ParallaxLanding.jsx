@@ -13,9 +13,11 @@ import panda from "../../assets/images/landing/panda.png";
 import jiyoung from "../../assets/images/landing/jiyoung.png";
 import embarassed from "../../assets/images/landing/embarassed.png";
 import aaron from "../../assets/images/landing/aaron.png";
+import lefttop from "../../assets/images/landing/lefttop.png";
 import eataaron from "../../assets/images/landing/eataaron.png";
-import developerImage from "../../assets/images/landing/aaron.png";
+import jyugly from "../../assets/images/landing/jyugly.png";
 import AnimatedTitle from "./AnimatedTitle";
+import TextSection from "./TextSection";
 
 const zoomIn = keyframes`
   from {
@@ -130,8 +132,34 @@ const ImageContainer = styled.div`
     z-index: 9;
   }
 
+  #jyugly {
+    position: absolute;
+    top: 3vh;
+    left: 13vw;
+    width: 25vw;
+    height: 55vh;
+    z-index: 1;
+  }
+
   #foregroundtrees {
     z-index: 4;
+  }
+
+  #lefttop {
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  #lefttopdiv {
+    width: 17vw;
+    height: 35vh;
+    top: 3vw;
+    left: 20vw;
+    background-color: #3498db;
+    position: absolute;
+    cursor: pointer;
+    z-index: 32;
+    opacity: 0;
   }
 
   #embarassed {
@@ -141,6 +169,11 @@ const ImageContainer = styled.div`
     left: 0%;
     height: 30vw;
     width: auto;
+  }
+
+  #backtree {
+    z-index: 3;
+    cursor: pointer;
   }
 
   #jiyoung {
@@ -166,47 +199,6 @@ const ImageContainer = styled.div`
   }
 `;
 
-const TextSection = styled.div`
-  min-height: 100vh;
-  padding: 2rem;
-  background-color: #000;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-`;
-
-const AboutSection = styled.div`
-  margin-bottom: 3rem;
-  text-align: center;
-`;
-
-const DeveloperSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-`;
-
-const DeveloperImage = styled.img`
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  margin-bottom: 1rem;
-`;
-
-const DeveloperName = styled.h2`
-  font-size: 2rem;
-  margin: 0.5rem 0;
-`;
-
-const DeveloperDescription = styled.p`
-  font-size: 1.2rem;
-  max-width: 600px;
-`;
-
 const ParallaxLanding = ({ onZoomComplete }) => {
   const [hovered, setHovered] = useState(false);
   const [mpHovered, setMpHovered] = useState(false);
@@ -215,7 +207,19 @@ const ParallaxLanding = ({ onZoomComplete }) => {
   const [doorOpened, setDoorOpened] = useState(false);
   const [foregroundTreesClicks, setForegroundTreesClicks] = useState(0);
   const [showImages, setShowImages] = useState(false);
+  const [showBacktree, setShowBacktree] = useState(true);
+  const backtreeTimeout = useRef(null);
   const doorRef = useRef(null);
+
+  const handleBacktreeMouseDown = () => {
+    backtreeTimeout.current = setTimeout(() => {
+      setShowBacktree(false);
+    }, 5000);
+  };
+
+  const handleBacktreeMouseUp = () => {
+    clearTimeout(backtreeTimeout.current);
+  };
 
   const handleClick = () => {
     if (doorRef.current) {
@@ -303,6 +307,8 @@ const ParallaxLanding = ({ onZoomComplete }) => {
             alt="Multiplayer Sign Hover"
           />
         )}
+        <img id="lefttop" src={lefttop} alt="lefttop" />
+
         <img id="playsign" src={playsign} alt="Play Sign" />
         <div
           id="playbuttondiv"
@@ -324,9 +330,16 @@ const ParallaxLanding = ({ onZoomComplete }) => {
           ) : (
             <img id="aaron" src={aaron} alt="Aaron" />
           ))}
-        <img src={backtree} alt="Back Tree" />
+        {showBacktree && <img id="backtree" src={backtree} alt="Back Tree" />}
+        <div
+          id="lefttopdiv"
+          onMouseDown={handleBacktreeMouseDown}
+          onMouseUp={handleBacktreeMouseUp}
+          onMouseLeave={handleBacktreeMouseUp}
+        />
         <img id="panda" src={panda} alt="Panda" />
         <div id="panda-div" />
+        <img id="jyugly" src={jyugly} alt="jyugly" />
         {foregroundTreesClicks >= 10 && (
           <img id="food-aaron" src={eataaron} alt="food-aaron" style={{}} />
         )}
@@ -335,28 +348,7 @@ const ParallaxLanding = ({ onZoomComplete }) => {
         )}
       </ImageContainer>
 
-      <TextSection>
-        <AboutSection>
-          <h2>About</h2>
-          <p>
-            Lorem Ipsum，也称乱数假文或者哑元文本，
-            是印刷及排版领域所常用的虚拟文字。由于曾经一台匿名的打印机刻意打乱了一盒印刷字体从而造出一本字体样品书，Lorem
-            Ipsum从西元15世纪起就被作为此领域的标准文本使用。它不仅延续了五个世纪，还通过了电子排版的挑战，其雏形却依然保存至今。在1960年代，”Leatraset”公司发布了印刷着Lorem
-            Ipsum段落的纸张，从而广泛普及了它的使用。最近，计算机桌面出版软件”Aldus
-            PageMaker”也通过同样的方式使Lorem Ipsum落入大众的视野。
-          </p>
-        </AboutSection>
-
-        <DeveloperSection>
-          <DeveloperImage src={developerImage} alt="Developer" />
-          <DeveloperName>Aaron Kao</DeveloperName>
-          <DeveloperDescription>
-            以下展示了自1500世纪以来使用的标准Lorem Ipsum段落，西塞罗笔下“de
-            Finibus Bonorum et Malorum”章节1.10.32 ，
-            1.10.33的原著作，以及其1914年译自H. Rackham的英文版本。
-          </DeveloperDescription>
-        </DeveloperSection>
-      </TextSection>
+      <TextSection />
     </>
   );
 };
