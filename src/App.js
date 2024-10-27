@@ -31,7 +31,7 @@ const App = () => {
     const query = `/people?limit=${numberOfPeople}${genderFilter}`;
 
     try {
-      const response = await fetch(`https://asianapi.onrender.com${query}`);
+      const response = await fetch(`https://api.guesstheasian.com${query}`);
       const data = await response.json();
       setPeople(data);
       setScreen("quiz");
