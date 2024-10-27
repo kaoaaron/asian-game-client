@@ -24,13 +24,10 @@ jobs:
       - name: Build the app
         run: npm run build
 
-      - name: List build directory
-        run: ls -R build
-
       - name: Deploy to S3
         uses: jakejarvis/s3-sync-action@master
         with:
-          args: --delete --exclude '*.html' --exclude '*.map' --exclude '404.html'
+          args: --delete --exclude '*.html' --exclude '*.map' --exclude '404.html' --acl public-read
         env:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
