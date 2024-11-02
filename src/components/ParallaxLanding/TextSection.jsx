@@ -32,6 +32,12 @@ const AboutSection = styled.div`
 
 const VisitorCountSection = styled.div`
   text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  margin: 2rem 0;
 `;
 
 const VisitorCount = styled.div`
@@ -48,6 +54,7 @@ const VisitorCountLabel = styled.h3`
   font-size: 1.5rem; // Adjust label size
   color: #fff; // Color of the label
   margin: 0.5rem 0; // Margin for spacing
+  text-align: center; // Center the label
 `;
 
 const DonationSection = styled.div`
@@ -147,6 +154,7 @@ const Developers = () => (
 
 const TextSection = () => {
   const [visitorCount, setVisitorCount] = useState(0);
+  const [gamesPlayedCount, setGamesPlayedCount] = useState(0);
 
   useEffect(() => {
     const fetchVisitorCount = async () => {
@@ -161,7 +169,20 @@ const TextSection = () => {
       }
     };
 
+    const fetchGamesPlayedCount = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_ASIAN_API_URL}/game-count`
+        );
+        const data = await response.json();
+        setGamesPlayedCount(data.count);
+      } catch (error) {
+        console.error("Error fetching games played count:", error);
+      }
+    };
+
     fetchVisitorCount();
+    fetchGamesPlayedCount();
   }, []);
 
   return (
@@ -187,8 +208,14 @@ const TextSection = () => {
       </AboutSection>
 
       <VisitorCountSection>
-        <VisitorCountLabel>Unique Visitors</VisitorCountLabel>
-        <VisitorCount>{visitorCount}</VisitorCount>
+        <div>
+          <VisitorCountLabel>Unique Visitors</VisitorCountLabel>
+          <VisitorCount>{visitorCount}</VisitorCount>
+        </div>
+        <div>
+          <VisitorCountLabel>Games Played</VisitorCountLabel>
+          <VisitorCount>{gamesPlayedCount}</VisitorCount>
+        </div>
       </VisitorCountSection>
 
       <Developers />

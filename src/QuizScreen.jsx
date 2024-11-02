@@ -99,7 +99,17 @@ const QuizScreen = ({ people, onBack }) => {
   const scorePercentage =
     totalQuestions > 0 ? ((score / totalQuestions) * 100).toFixed(2) : 0;
 
+  const handleCompleteQuiz = async () => {
+    await fetch(`${process.env.REACT_APP_ASIAN_API_URL}/increment-games`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
   if (currentPersonIndex >= totalQuestions) {
+    handleCompleteQuiz();
     return (
       <Stack spacing={2} alignItems="center">
         <Typography variant="h5">Quiz Complete!</Typography>
