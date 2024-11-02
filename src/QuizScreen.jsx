@@ -21,14 +21,21 @@ const ethnicities = [
   "Vietnamese",
 ];
 
+const calculateAge = (birthDate) => {
+  if (!birthDate) return null;
+  const birthYear = new Date(birthDate).getFullYear();
+  const currentYear = new Date().getFullYear();
+  return currentYear - birthYear;
+};
+
 const ColoredButton = styled(Button)(({ answerStatus }) => ({
   transition: "background-color 0.3s ease-in-out",
   backgroundColor:
     answerStatus === "correct"
-      ? "green"
+      ? "#4caf50"
       : answerStatus === "wrong"
-      ? "red"
-      : "navyblue",
+      ? "#f44336"
+      : "#b2a819",
   color: "white",
   flex: 1,
   height: "100%",
@@ -38,7 +45,7 @@ const ColoredButton = styled(Button)(({ answerStatus }) => ({
         ? "darkgreen"
         : answerStatus === "wrong"
         ? "darkred"
-        : "blue",
+        : "#d5cc38",
   },
 }));
 
@@ -141,18 +148,24 @@ const QuizScreen = ({ people, onBack }) => {
       <LinearProgress
         variant="determinate"
         value={Math.floor((currentPersonIndex / totalQuestions) * 100)}
-        style={{ height: 8, width: "100%", borderRadius: 5 }}
+        style={{
+          height: 8,
+          width: "100%",
+          borderRadius: 5,
+          backgroundColor: "#b2a819",
+          color: "red",
+        }}
       />
       <Stack
-        direction="row"
-        spacing={2}
+        direction={{ xs: "column", sm: "row" }}
+        spacing={{ xs: 1, sm: 2 }}
         alignItems="flex-start"
-        sx={{ width: "100%" }}
+        sx={{ width: "100%", flex: 1 }}
       >
-        <Box sx={{ flex: 2 }}>
+        <Box sx={{ flex: 2, width: "100%" }}>
           <Card
             sx={{
-              height: { xs: "65vh", sm: "80vh" },
+              height: { xs: "65vh", sm: "95vh" },
               overflow: "hidden",
             }}
           >
@@ -167,68 +180,117 @@ const QuizScreen = ({ people, onBack }) => {
             />
           </Card>
         </Box>
-        <Box
+        <Stack
           sx={{
             flex: 1,
-            height: "50vh",
-            backgroundColor: "#f5f5f5",
-            textAlign: "center",
-            display: { xs: "none", sm: "flex" },
+            height: "95vh",
+            display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
+            paddingRight: { xs: "0", sm: "16px" },
+            width: "100%",
           }}
         >
-          {selectedOption && (
-            <>
-              <Typography variant="h6" color="text.primary">
-                {currentPerson.name}
-              </Typography>
-              <Typography variant="body1" color="text.primary">
-                Occupation: {currentPerson.occupation}
-              </Typography>
-            </>
-          )}
-        </Box>
-      </Stack>
-
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        spacing={1}
-        sx={{ width: "100%", flex: 1 }}
-      >
-        {options.map((option) => (
-          <Stack
-            key={option}
+          <Box
             sx={{
-              flex: { xs: 1, sm: 0.5 },
-              height: { xs: "calc(100vh / 5 - 8px)", sm: "100%" },
+              height: "50vh",
+              backgroundColor: "#f5f5f5",
+              textAlign: "center",
+              display: { xs: "none", sm: "flex" },
+              flexDirection: "column",
+              justifyContent: "center",
+              padding: 2,
+              borderRadius: 2,
+              boxShadow: 1,
             }}
           >
-            <ColoredButton
-              variant="contained"
-              answerStatus={
-                selectedOption === option && isCorrect
-                  ? "correct"
-                  : selectedOption === option &&
-                    !isCorrect &&
-                    option === selectedOption
-                  ? "wrong"
-                  : selectedOption && option === currentPerson.ethnicity
-                  ? "correct"
-                  : null
-              }
-              onClick={() => handleOptionClick(option)}
-              style={{
-                width: "100%",
-                padding: "8px",
-                fontSize: "1rem",
-                pointerEvents: isDisabled ? "none" : "auto",
-              }}
-            >
-              {option}
-            </ColoredButton>
-          </Stack>
-        ))}
+            {selectedOption && (
+              <>
+                <Typography variant="h4" color="text.primary">
+                  {currentPerson.nativeName || currentPerson.name}
+                </Typography>
+                {currentPerson.nativeName && (
+                  <Typography
+                    variant="h6"
+                    color="text.primary"
+                    sx={{ marginTop: "8px" }}
+                  >
+                    English Name: {currentPerson.name}
+                  </Typography>
+                )}
+                {currentPerson.shortDescription && (
+                  <Typography
+                    variant="body2"
+                    color="text.primary"
+                    sx={{ marginTop: "8px" }}
+                  >
+                    Description: {currentPerson.shortDescription}
+                  </Typography>
+                )}
+                {currentPerson.birthDate && (
+                  <Typography
+                    variant="body2"
+                    color="text.primary"
+                    sx={{ marginTop: "8px" }}
+                  >
+                    Age: {calculateAge(currentPerson.birthDate)}
+                  </Typography>
+                )}
+                {currentPerson.birthPlaceLabel && (
+                  <Typography
+                    variant="body2"
+                    color="text.primary"
+                    sx={{ marginTop: "8px" }}
+                  >
+                    Birthplace: {currentPerson.birthPlaceLabel}
+                  </Typography>
+                )}
+                <Typography
+                  variant="body2"
+                  color="text.primary"
+                  sx={{ marginTop: "8px" }}
+                >
+                  Occupation: {currentPerson.occupation}
+                </Typography>
+              </>
+            )}
+          </Box>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+              gap: 1,
+              width: "100%",
+              flex: 1,
+              marginTop: { xs: 0, sm: 1 },
+              height: "auto",
+            }}
+          >
+            {options.map((option) => (
+              <ColoredButton
+                key={option}
+                variant="contained"
+                answerStatus={
+                  selectedOption === option && isCorrect
+                    ? "correct"
+                    : selectedOption === option && !isCorrect
+                    ? "wrong"
+                    : selectedOption && option === currentPerson.ethnicity
+                    ? "correct"
+                    : null
+                }
+                onClick={() => handleOptionClick(option)}
+                style={{
+                  fontSize: "clamp(0.5rem, 2vw, 1.5rem)",
+                  pointerEvents: isDisabled ? "none" : "auto",
+                  flex: 1,
+                  height: "100%",
+                }}
+              >
+                {option}
+              </ColoredButton>
+            ))}
+          </Box>
+        </Stack>
       </Stack>
     </Stack>
   );

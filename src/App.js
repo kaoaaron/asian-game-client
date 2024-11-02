@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, Box, useMediaQuery } from "@mui/material";
-import StartScreen from "./StartScreen";
+import MobileStartScreen from "./MobileStartScreen";
 import FilterOptions from "./FilterOptions";
 import QuizScreen from "./QuizScreen";
 import ParallaxLanding from "./components/ParallaxLanding/ParallaxLanding";
@@ -43,6 +43,7 @@ const App = () => {
   };
 
   const handleBackToStart = () => {
+    setZoomFinished(false);
     setScreen("start");
   };
 
@@ -62,7 +63,7 @@ const App = () => {
           ) : screen === "quiz" ? (
             <QuizScreen people={people} onBack={handleBackToStart} />
           ) : (
-            <StartScreen onSinglePlayerClick={handleStartSinglePlayer} />
+            <MobileStartScreen onSinglePlayerClick={handleStartSinglePlayer} />
           )}
         </Box>
       ) : isMobile ? (
@@ -76,7 +77,9 @@ const App = () => {
         >
           <Box sx={{ width: "100%", maxWidth: 600 }}>
             {screen === "start" && (
-              <StartScreen onSinglePlayerClick={handleStartSinglePlayer} />
+              <MobileStartScreen
+                onSinglePlayerClick={handleStartSinglePlayer}
+              />
             )}
             {screen === "filters" && (
               <FilterOptions
