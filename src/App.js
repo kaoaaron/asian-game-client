@@ -31,7 +31,9 @@ const App = () => {
     const query = `/people?limit=${numberOfPeople}${genderFilter}`;
 
     try {
-      const response = await fetch(`https://api.guesstheasian.com${query}`);
+      const response = await fetch(
+        `${process.env.REACT_APP_ASIAN_API_URL}${query}`
+      );
       const data = await response.json();
       setPeople(data);
       setScreen("quiz");

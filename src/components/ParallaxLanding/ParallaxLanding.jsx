@@ -339,7 +339,7 @@ const ParallaxLanding = ({ onZoomComplete }) => {
         />
         <img id="panda" src={panda} alt="Panda" />
         <div id="panda-div" />
-        <img id="jyugly" src={jyugly} alt="jyugly" />
+        {!showBacktree && <img id="jyugly" src={jyugly} alt="jyugly" />}
         {foregroundTreesClicks >= 10 && (
           <img id="food-aaron" src={eataaron} alt="food-aaron" style={{}} />
         )}

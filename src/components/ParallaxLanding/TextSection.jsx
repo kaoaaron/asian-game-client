@@ -152,7 +152,7 @@ const TextSection = () => {
     const fetchVisitorCount = async () => {
       try {
         const response = await fetch(
-          "https://api.guesstheasian.com/visitor-count"
+          `${process.env.REACT_APP_ASIAN_API_URL}/visitor-count`
         );
         const data = await response.json();
         setVisitorCount(data.uniqueVisitorCount);
