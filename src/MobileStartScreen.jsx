@@ -57,7 +57,9 @@ const MobileStartScreen = ({ onSinglePlayerClick }) => {
 
   return (
     <Container>
-      <Title variant="h3">Guess the Asian</Title>
+      <Title variant="h3" color="gold">
+        Guess the Asian
+      </Title>
       <Image
         src={imageSrc}
         alt="Single Player and Multiplayer"

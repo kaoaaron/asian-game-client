@@ -257,7 +257,7 @@ const QuizScreen = ({ people, onBack }) => {
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: { sm: "1fr", md: "1fr 1fr" },
+              gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
               gap: 1,
               width: "100%",
               flex: 1,
@@ -280,7 +280,10 @@ const QuizScreen = ({ people, onBack }) => {
                 }
                 onClick={() => handleOptionClick(option)}
                 style={{
-                  fontSize: "clamp(0.5rem, 1rem, 1.5rem)",
+                  fontSize: {
+                    xs: "clamp(0.5rem, 1rem, 1.5rem)",
+                    sm: "clamp(0.5rem, 2vw, 1.5rem)",
+                  },
                   pointerEvents: isDisabled ? "none" : "auto",
                   flex: 1,
                   height: "100%",
