@@ -4,6 +4,20 @@ import MobileStartScreen from "./MobileStartScreen";
 import FilterOptions from "./FilterOptions";
 import QuizScreen from "./QuizScreen";
 import ParallaxLanding from "./components/ParallaxLanding/ParallaxLanding";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+const theme = createTheme({
+  palette: {
+    gold: {
+      main: getComputedStyle(document.documentElement).getPropertyValue(
+        "--primary-gold"
+      ),
+      light: getComputedStyle(document.documentElement).getPropertyValue(
+        "--light-gold"
+      ),
+    },
+  },
+});
 
 const App = () => {
   const [screen, setScreen] = useState("start");
@@ -50,7 +64,7 @@ const App = () => {
   const isMobile = useMediaQuery("(max-width:980px)");
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <style>{`body { margin: 0; background-color: black; color: white;  }`}</style>{" "}
       {zoomFinished ? (
         <Box sx={{ width: "100%" }}>
@@ -101,7 +115,7 @@ const App = () => {
           }}
         />
       )}
-    </>
+    </ThemeProvider>
   );
 };
 

@@ -65,12 +65,12 @@ const MobileStartScreen = ({ onSinglePlayerClick }) => {
       />
       <StyledButton
         variant="contained"
-        color="primary"
+        color="gold"
         onClick={onSinglePlayerClick}
       >
         Single Player
       </StyledButton>
-      <StyledButton variant="contained" color="primary" disabled>
+      <StyledButton variant="contained" color="gold" disabled>
         Play with Friends
       </StyledButton>
     </Container>

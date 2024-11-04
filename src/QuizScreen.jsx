@@ -9,6 +9,7 @@ import {
   LinearProgress,
 } from "@mui/material";
 import { styled } from "@mui/system";
+import "./colors.css";
 
 const ethnicities = [
   "Chinese",
@@ -35,7 +36,7 @@ const ColoredButton = styled(Button)(({ answerStatus }) => ({
       ? "#4caf50"
       : answerStatus === "wrong"
       ? "#f44336"
-      : "#b2a819",
+      : "var(--primary-gold)",
   color: "white",
   flex: 1,
   height: "100%",
@@ -148,12 +149,11 @@ const QuizScreen = ({ people, onBack }) => {
       <LinearProgress
         variant="determinate"
         value={Math.floor((currentPersonIndex / totalQuestions) * 100)}
+        color="gold"
         style={{
           height: 8,
           width: "100%",
           borderRadius: 5,
-          backgroundColor: "#b2a819",
-          color: "red",
         }}
       />
       <Stack
