@@ -46,7 +46,7 @@ const ColoredButton = styled(Button)(({ answerStatus }) => ({
         ? "darkgreen"
         : answerStatus === "wrong"
         ? "darkred"
-        : "#d5cc38",
+        : "var(--light-gold)",
   },
 }));
 
@@ -126,7 +126,7 @@ const QuizScreen = ({ people, onBack }) => {
         </Typography>
         <Button
           variant="contained"
-          color="primary"
+          color="gold"
           onClick={onBack}
           style={{ marginTop: "16px" }}
         >
