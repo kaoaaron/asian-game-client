@@ -257,7 +257,7 @@ const QuizScreen = ({ people, onBack }) => {
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+              gridTemplateColumns: { sm: "1fr", md: "1fr 1fr" },
               gap: 1,
               width: "100%",
               flex: 1,
