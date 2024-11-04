@@ -280,7 +280,7 @@ const QuizScreen = ({ people, onBack }) => {
                 }
                 onClick={() => handleOptionClick(option)}
                 style={{
-                  fontSize: "clamp(0.5rem, 2vw, 1.5rem)",
+                  fontSize: "clamp(0.5rem, 1rem, 1.5rem)",
                   pointerEvents: isDisabled ? "none" : "auto",
                   flex: 1,
                   height: "100%",
