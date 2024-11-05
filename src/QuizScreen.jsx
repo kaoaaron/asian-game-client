@@ -9,6 +9,7 @@ import {
   LinearProgress,
 } from "@mui/material";
 import { styled } from "@mui/system";
+import "./colors.css";
 
 const ethnicities = [
   "Chinese",
@@ -35,7 +36,7 @@ const ColoredButton = styled(Button)(({ answerStatus }) => ({
       ? "#4caf50"
       : answerStatus === "wrong"
       ? "#f44336"
-      : "#b2a819",
+      : "var(--primary-gold)",
   color: "white",
   flex: 1,
   height: "100%",
@@ -45,7 +46,7 @@ const ColoredButton = styled(Button)(({ answerStatus }) => ({
         ? "darkgreen"
         : answerStatus === "wrong"
         ? "darkred"
-        : "#d5cc38",
+        : "var(--light-gold)",
   },
 }));
 
@@ -125,7 +126,7 @@ const QuizScreen = ({ people, onBack }) => {
         </Typography>
         <Button
           variant="contained"
-          color="primary"
+          color="gold"
           onClick={onBack}
           style={{ marginTop: "16px" }}
         >
@@ -148,12 +149,11 @@ const QuizScreen = ({ people, onBack }) => {
       <LinearProgress
         variant="determinate"
         value={Math.floor((currentPersonIndex / totalQuestions) * 100)}
+        color="gold"
         style={{
           height: 8,
           width: "100%",
           borderRadius: 5,
-          backgroundColor: "#b2a819",
-          color: "red",
         }}
       />
       <Stack
@@ -280,7 +280,10 @@ const QuizScreen = ({ people, onBack }) => {
                 }
                 onClick={() => handleOptionClick(option)}
                 style={{
-                  fontSize: "clamp(0.5rem, 2vw, 1.5rem)",
+                  fontSize: {
+                    xs: "clamp(0.5rem, 1rem, 1.5rem)",
+                    sm: "clamp(0.5rem, 2vw, 1.5rem)",
+                  },
                   pointerEvents: isDisabled ? "none" : "auto",
                   flex: 1,
                   height: "100%",
