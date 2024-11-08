@@ -49,7 +49,7 @@ const FilterOptions = ({ filters, onFilterChange, onStartQuiz }) => {
         <Grid item>
           <Typography variant="p">Number of People:</Typography>
           <RadioGroup row>
-            {[10, 30, 50, 100, 200].map((item) => (
+            {[10, 30, 50, 100, 150, 200].map((item) => (
               <FormControlLabel
                 sx={{ margin: "2px" }}
                 value={item}
