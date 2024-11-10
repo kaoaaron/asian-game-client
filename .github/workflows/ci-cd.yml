@@ -34,4 +34,6 @@ jobs:
           aws-region: us-east-2
 
       - name: Sync files to S3
-        run: aws s3 sync build/ s3://${{ secrets.AWS_S3_BUCKET }} --acl public-read --delete --exact-timestamps
+        run: |
+          aws s3 rm s3://${{ secrets.AWS_S3_BUCKET }} --recursive
+          aws s3 sync build/ s3://${{ secrets.AWS_S3_BUCKET }} --acl public-read --delete --exact-timestamps
