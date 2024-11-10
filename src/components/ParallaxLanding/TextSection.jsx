@@ -158,7 +158,6 @@ const TextSection = () => {
 
   useEffect(() => {
     const fetchVisitorCount = async () => {
-      console.log("asd", process.env.REACT_APP_ASIAN_API_URL);
       try {
         const response = await fetch(
           `${process.env.REACT_APP_ASIAN_API_URL}/visitor-count`

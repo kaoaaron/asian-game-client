@@ -24,7 +24,7 @@ jobs:
       - name: Build the app
         run: npm run build
         env:
-          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          REACT_APP_ASIAN_API_URL: ${{ secrets.REACT_APP_ASIAN_API_URL }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
