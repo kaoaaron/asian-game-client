@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import developerImage from "../../assets/images/landing/aaronprofile.png";
+import developerImage2 from "../../assets/images/landing/jyprofile.png";
+import uiImage from "../../assets/images/landing/tempquestionmark.png";
+import { fetchGamesPlayedCount, fetchVisitorCount } from "../../api";
 
 const TextSectionContainer = styled.div`
   min-height: 100vh;
@@ -94,61 +97,71 @@ const DonateButton = styled.input`
   }
 `;
 
-const DeveloperSection = styled.div`
+const ContributorSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 `;
 
-const DeveloperImage = styled.img`
+const ContributorImage = styled.img`
   width: 250px;
   height: 250px;
   border-radius: 50%;
   margin-bottom: 1rem;
 `;
 
-const DeveloperName = styled.h2`
+const ContributorName = styled.h2`
   font-size: 2rem;
   margin: 0.5rem 0;
 `;
 
-const DeveloperDescription = styled.p`
+const ContributorDescription = styled.p`
   font-size: 1.2rem;
   max-width: 600px;
   margin: 0;
 `;
 
-const DevelopersRow = styled.div`
+const ContributorsRow = styled.div`
   display: flex;
   gap: 2rem;
   justify-content: center;
 `;
 
-const DevelopersHeader = styled.h2`
+const ContributorsHeader = styled.h2`
   font-size: 2.5rem;
   margin: 2rem 0 1rem;
   text-align: center;
 `;
 
-const DeveloperProfile = ({ image, name, description }) => (
-  <DeveloperSection>
-    <DeveloperImage src={image} alt={name} />
-    <DeveloperName>{name}</DeveloperName>
-    <DeveloperDescription>{description}</DeveloperDescription>
-  </DeveloperSection>
+const ContributorProfile = ({ image, name, description }) => (
+  <ContributorSection>
+    <ContributorImage src={image} alt={name} />
+    <ContributorName>{name}</ContributorName>
+    <ContributorDescription>{description}</ContributorDescription>
+  </ContributorSection>
 );
 
-const Developers = () => (
+const Contributors = () => (
   <>
-    <DevelopersHeader>Developers</DevelopersHeader>
-    <DevelopersRow>
-      <DeveloperProfile
+    <ContributorsHeader>Contributors</ContributorsHeader>
+    <ContributorsRow>
+      <ContributorProfile
         image={developerImage}
         name="Aaron Kao"
-        description="Principal Developer"
+        description="Driving Developer"
       />
-    </DevelopersRow>
+      <ContributorProfile
+        image={developerImage2}
+        name="Jiyoung Lim"
+        description="Developer"
+      />
+      <ContributorProfile
+        image={uiImage}
+        name="Seohui Nam"
+        description="Designer"
+      />
+    </ContributorsRow>
   </>
 );
 
@@ -157,37 +170,24 @@ const TextSection = () => {
   const [gamesPlayedCount, setGamesPlayedCount] = useState(0);
 
   useEffect(() => {
-    const fetchVisitorCount = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.REACT_APP_ASIAN_API_URL}/visitor-count`
-        );
-        const data = await response.json();
-        setVisitorCount(data.uniqueVisitorCount);
-      } catch (error) {
-        console.error("Error fetching visitor count:", error);
-      }
+    const getVisitorCount = async () => {
+      const count = await fetchVisitorCount();
+      setVisitorCount(count);
     };
 
-    const fetchGamesPlayedCount = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.REACT_APP_ASIAN_API_URL}/game-count`
-        );
-        const data = await response.json();
-        setGamesPlayedCount(data.count);
-      } catch (error) {
-        console.error("Error fetching games played count:", error);
-      }
+    const getGamesPlayedCount = async () => {
+      const count = await fetchGamesPlayedCount();
+      setGamesPlayedCount(count);
     };
 
-    fetchVisitorCount();
-    fetchGamesPlayedCount();
+    getVisitorCount();
+    getGamesPlayedCount();
   }, []);
 
   return (
     <TextSectionContainer>
       <AboutSection>
+        {" "}
         <h2>About</h2>
         <p>
           Welcome to <strong>Guess the Asian Ethnicity</strong>, a game designed
@@ -218,7 +218,7 @@ const TextSection = () => {
         </div>
       </VisitorCountSection>
 
-      <Developers />
+      <Contributors />
 
       <DonationSection>
         <h2>Support Our Project</h2>

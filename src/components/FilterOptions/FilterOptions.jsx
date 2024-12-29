@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import {
   Grid,
@@ -10,6 +10,15 @@ import {
 } from "@mui/material";
 
 const FilterOptions = ({ filters, onFilterChange, onStartQuiz }) => {
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  const handleStartQuiz = async () => {
+    setIsButtonDisabled(true);
+    if (!isButtonDisabled) {
+      await onStartQuiz();
+    }
+  };
+
   const StyledButtonLabel = styled.span`
     display: inline-block;
     padding: 8px 16px;
@@ -27,13 +36,19 @@ const FilterOptions = ({ filters, onFilterChange, onStartQuiz }) => {
     color: black;
   `}
   `;
+
   return (
     <Grid
       container
       direction="column"
       alignItems="center"
       spacing={6}
-      style={{ color: "white" }} // Change text color to white for better contrast
+      style={{
+        color: "white",
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+      }}
     >
       <Grid item>
         <Typography variant="h5">Select Quiz Options</Typography>
@@ -94,7 +109,7 @@ const FilterOptions = ({ filters, onFilterChange, onStartQuiz }) => {
         </Grid>
       </Grid>
       <Grid item>
-        <Button variant="contained" color="gold" onClick={onStartQuiz}>
+        <Button variant="contained" color="gold" onClick={handleStartQuiz}>
           Start Quiz
         </Button>
       </Grid>

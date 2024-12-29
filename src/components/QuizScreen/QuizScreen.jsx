@@ -9,7 +9,7 @@ import {
   LinearProgress,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import "./colors.css";
+import "../../colors.css";
 
 const ethnicities = [
   "Chinese",
@@ -119,16 +119,32 @@ const QuizScreen = ({ people, onBack }) => {
   if (currentPersonIndex >= totalQuestions) {
     handleCompleteQuiz();
     return (
-      <Stack spacing={2} alignItems="center">
-        <Typography variant="h5">Quiz Complete!</Typography>
-        <Typography variant="h6">
+      <Stack
+        spacing={2}
+        alignItems="center"
+        justifyContent="center"
+        sx={{
+          width: "100%",
+          height: "100vh",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          display: "flex",
+          flexDirection: "column",
+          textAlign: "center", // Ensures text is centered
+        }}
+      >
+        <Typography variant="h5" sx={{ color: "white" }}>
+          Quiz Complete!
+        </Typography>
+        <Typography variant="h6" sx={{ color: "white" }}>
           Your Score: {score}/{totalQuestions} ({scorePercentage}%)
         </Typography>
         <Button
           variant="contained"
           color="gold"
           onClick={onBack}
-          style={{ marginTop: "16px" }}
+          sx={{ marginTop: "16px" }}
         >
           Back to Start Game
         </Button>
