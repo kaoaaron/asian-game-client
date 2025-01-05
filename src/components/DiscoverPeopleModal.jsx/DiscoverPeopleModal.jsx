@@ -18,6 +18,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CustomModal from "../CustomModal/CustomModal";
 import useQuizStore from "../../store";
+import { useMediaQuery } from "@mui/material";
 
 const DiscoverPeopleModal = ({ open, onClose }) => {
   const people = useQuizStore((state) => state.people);
@@ -25,6 +26,8 @@ const DiscoverPeopleModal = ({ open, onClose }) => {
 
   const [expandedPerson, setExpandedPerson] = useState(null);
   const [filter, setFilter] = useState("all");
+
+  const isMobile = useMediaQuery("(max-width:980px)");
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
@@ -134,16 +137,16 @@ const DiscoverPeopleModal = ({ open, onClose }) => {
                     {person.description}
                   </Typography>
                   <Stack
-                    direction="row"
+                    direction={isMobile ? "column" : "row"} // Stack items in column for mobile, row for desktop
                     spacing={2}
-                    alignItems="center"
+                    alignItems={isMobile ? "flex-start" : "center"} // Align items to start for mobile
                     sx={{ mt: 2 }}
                   >
                     <img
                       src={person.imageUrl}
                       alt={person.name}
                       style={{
-                        width: "100px",
+                        width: isMobile ? "150px" : "100px", // Bigger image for mobile
                         height: "auto",
                         borderRadius: "8px",
                       }}

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import developerImage from "../../assets/images/landing/aaronprofile.png";
-import developerImage2 from "../../assets/images/landing/jyprofile.png";
-import uiImage from "../../assets/images/landing/tempquestionmark.png";
 import { fetchGamesPlayedCount, fetchVisitorCount } from "../../api";
+import Contributors from "../Contributors/Contributors";
 
 const TextSectionContainer = styled.div`
   min-height: 100vh;
@@ -15,6 +13,10 @@ const TextSectionContainer = styled.div`
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
+
+  @media (max-width: 980px) {
+    padding: 1rem;
+  }
 `;
 
 const AboutSection = styled.div`
@@ -24,12 +26,21 @@ const AboutSection = styled.div`
   h2 {
     font-size: 3rem;
     margin-bottom: 1rem;
+
+    @media (max-width: 980px) {
+      font-size: 2rem;
+    }
   }
 
   p {
     font-size: 1.2rem;
     max-width: 600px;
     margin: 0 auto 2rem;
+
+    @media (max-width: 980px) {
+      font-size: 1rem;
+      max-width: 90%;
+    }
   }
 `;
 
@@ -41,6 +52,11 @@ const VisitorCountSection = styled.div`
   align-items: center;
   gap: 3rem;
   margin: 2rem 0;
+
+  @media (max-width: 980px) {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
 `;
 
 const VisitorCount = styled.div`
@@ -51,13 +67,17 @@ const VisitorCount = styled.div`
   border: 2px solid #ffb300;
   border-radius: 10px;
   background-color: rgba(255, 179, 0, 0.1);
+
+  @media (max-width: 980px) {
+    font-size: 2.5rem;
+  }
 `;
 
 const VisitorCountLabel = styled.h3`
-  font-size: 1.5rem; // Adjust label size
-  color: #fff; // Color of the label
-  margin: 0.5rem 0; // Margin for spacing
-  text-align: center; // Center the label
+  font-size: 1.5rem;
+  color: #fff;
+  margin: 0.5rem 0;
+  text-align: center;
 `;
 
 const DonationSection = styled.div`
@@ -67,12 +87,21 @@ const DonationSection = styled.div`
   h2 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
+
+    @media (max-width: 980px) {
+      font-size: 2rem;
+    }
   }
 
   p {
     font-size: 1.2rem;
     max-width: 600px;
     margin: 0 auto 2rem;
+
+    @media (max-width: 980px) {
+      font-size: 1rem;
+      max-width: 90%;
+    }
   }
 `;
 
@@ -97,74 +126,6 @@ const DonateButton = styled.input`
   }
 `;
 
-const ContributorSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-`;
-
-const ContributorImage = styled.img`
-  width: 250px;
-  height: 250px;
-  border-radius: 50%;
-  margin-bottom: 1rem;
-`;
-
-const ContributorName = styled.h2`
-  font-size: 2rem;
-  margin: 0.5rem 0;
-`;
-
-const ContributorDescription = styled.p`
-  font-size: 1.2rem;
-  max-width: 600px;
-  margin: 0;
-`;
-
-const ContributorsRow = styled.div`
-  display: flex;
-  gap: 2rem;
-  justify-content: center;
-`;
-
-const ContributorsHeader = styled.h2`
-  font-size: 2.5rem;
-  margin: 2rem 0 1rem;
-  text-align: center;
-`;
-
-const ContributorProfile = ({ image, name, description }) => (
-  <ContributorSection>
-    <ContributorImage src={image} alt={name} />
-    <ContributorName>{name}</ContributorName>
-    <ContributorDescription>{description}</ContributorDescription>
-  </ContributorSection>
-);
-
-const Contributors = () => (
-  <>
-    <ContributorsHeader>Contributors</ContributorsHeader>
-    <ContributorsRow>
-      <ContributorProfile
-        image={developerImage}
-        name="Aaron Kao"
-        description="Driving Developer"
-      />
-      <ContributorProfile
-        image={developerImage2}
-        name="Jiyoung Lim"
-        description="Developer"
-      />
-      <ContributorProfile
-        image={uiImage}
-        name="Seohui Nam"
-        description="Designer"
-      />
-    </ContributorsRow>
-  </>
-);
-
 const TextSection = () => {
   const [visitorCount, setVisitorCount] = useState(0);
   const [gamesPlayedCount, setGamesPlayedCount] = useState(0);
@@ -187,7 +148,6 @@ const TextSection = () => {
   return (
     <TextSectionContainer>
       <AboutSection>
-        {" "}
         <h2>About</h2>
         <p>
           Welcome to <strong>Guess the Asian Ethnicity</strong>, a game designed
@@ -206,7 +166,6 @@ const TextSection = () => {
           and let’s celebrate diversity together!
         </p>
       </AboutSection>
-
       <VisitorCountSection>
         <div>
           <VisitorCountLabel>Unique Visitors</VisitorCountLabel>
@@ -217,9 +176,7 @@ const TextSection = () => {
           <VisitorCount>{gamesPlayedCount}</VisitorCount>
         </div>
       </VisitorCountSection>
-
       <Contributors />
-
       <DonationSection>
         <h2>Support Our Project</h2>
         <p>

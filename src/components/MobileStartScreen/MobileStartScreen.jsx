@@ -1,15 +1,26 @@
 import React, { useState } from "react";
 import { Button, Typography } from "@mui/material";
 import styled from "styled-components";
+import TextSection from "../ParallaxLanding/TextSection";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
-  overflow: hidden;
+  justify-content: flex-start;
+  min-height: 100vh;
   background-color: black;
+  padding: 16px;
+  overflow: hidden;
+`;
+
+const ContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  height: 100vh;
 `;
 
 const Image = styled.img`
@@ -57,24 +68,28 @@ const MobileStartScreen = ({ onSinglePlayerClick }) => {
 
   return (
     <Container>
-      <Title variant="h3" color="gold">
-        Guess the Asian
-      </Title>
-      <Image
-        src={imageSrc}
-        alt="Single Player and Multiplayer"
-        onClick={handleImageClick}
-      />
-      <StyledButton
-        variant="contained"
-        color="gold"
-        onClick={onSinglePlayerClick}
-      >
-        Single Player
-      </StyledButton>
-      <StyledButton variant="contained" color="gold" disabled>
-        Play with Friends
-      </StyledButton>
+      <ContentContainer>
+        <Title variant="h3" color="gold">
+          Guess the Asian Ethnicity
+        </Title>
+        <Image
+          src={imageSrc}
+          alt="Single Player and Multiplayer"
+          onClick={handleImageClick}
+        />
+        <StyledButton
+          variant="contained"
+          color="gold"
+          onClick={onSinglePlayerClick}
+        >
+          Single Player
+        </StyledButton>
+        <StyledButton variant="contained" color="gold" disabled>
+          Play with Friends
+        </StyledButton>
+      </ContentContainer>
+
+      <TextSection />
     </Container>
   );
 };

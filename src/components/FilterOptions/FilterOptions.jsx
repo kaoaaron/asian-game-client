@@ -54,11 +54,11 @@ const FilterOptions = ({ filters, onFilterChange, onStartQuiz }) => {
       </Typography>
 
       <Stack spacing={4} alignItems="center" sx={{ width: "100%" }}>
-        <Box>
+        <Box sx={{ width: "100%", textAlign: "center" }}>
           <Typography variant="body1" sx={{ mb: 2 }}>
-            Number of People:
+            Number of People
           </Typography>
-          <RadioGroup row>
+          <RadioGroup row sx={{ justifyContent: "center" }}>
             {[10, 30, 50, 100, 150, 200].map((item) => (
               <FormControlLabel
                 key={item}
@@ -81,11 +81,11 @@ const FilterOptions = ({ filters, onFilterChange, onStartQuiz }) => {
           </RadioGroup>
         </Box>
 
-        <Box>
+        <Box sx={{ width: "100%", textAlign: "center" }}>
           <Typography variant="body1" sx={{ mb: 2 }}>
-            Gender:
+            Gender
           </Typography>
-          <RadioGroup row>
+          <RadioGroup row sx={{ justifyContent: "center" }}>
             {["both", "male", "female"].map((item) => (
               <FormControlLabel
                 key={item}
