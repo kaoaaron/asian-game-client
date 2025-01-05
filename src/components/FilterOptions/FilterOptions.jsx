@@ -59,7 +59,7 @@ const FilterOptions = ({ filters, onFilterChange, onStartQuiz }) => {
             Number of People
           </Typography>
           <RadioGroup row sx={{ justifyContent: "center" }}>
-            {[10, 30, 50, 100, 150, 200].map((item) => (
+            {[2, 30, 50, 100, 150, 200].map((item) => (
               <FormControlLabel
                 key={item}
                 sx={{ margin: "2px" }}
