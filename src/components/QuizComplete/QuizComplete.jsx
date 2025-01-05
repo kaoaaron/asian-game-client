@@ -1,11 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Stack, Button, Typography } from "@mui/material";
 import DiscoverPeopleModal from "../DiscoverPeopleModal.jsx/DiscoverPeopleModal";
+import { fetchLeaderboardAvailability } from "../../api";
+import LeaderboardFormModal from "./LeaderboardFormModal";
+import { useNavigate } from "react-router";
 
 const QuizComplete = ({ score, totalQuestions, scorePercentage, onBack }) => {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLBModalOpen, setIsLBModalOpen] = useState(false);
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+  const handleCloseLBModal = () => setIsLBModalOpen(false);
+  const handleViewLeaderboard = () => navigate("/leaderboard");
+
+  useEffect(() => {
+    async function fetchData() {
+      const res = await fetchLeaderboardAvailability({
+        scored: score,
+        total: totalQuestions,
+      });
+      if (res) {
+        setIsLBModalOpen(true);
+      }
+    }
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -46,9 +66,23 @@ const QuizComplete = ({ score, totalQuestions, scorePercentage, onBack }) => {
         >
           Back to Start Game
         </Button>
+        <Button
+          variant="contained"
+          color="gold"
+          onClick={handleViewLeaderboard}
+          sx={{ marginTop: "16px" }}
+        >
+          View Leaderboard
+        </Button>
       </Stack>
 
       <DiscoverPeopleModal open={isModalOpen} onClose={handleCloseModal} />
+      <LeaderboardFormModal
+        open={isLBModalOpen}
+        onClose={handleCloseLBModal}
+        scored={score}
+        total={totalQuestions}
+      />
     </>
   );
 };
