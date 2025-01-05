@@ -53,6 +53,9 @@ const App = () => {
 
   const setPeople = useQuizStore((state) => state.setPeople);
   const isMobile = useMediaQuery("(max-width:980px)");
+  const resetIncorrectGuesses = useQuizStore(
+    (state) => state.resetIncorrectGuesses
+  );
 
   const handleStartSinglePlayer = () => {
     setScreen(ScreenEnum.FILTERS);
@@ -74,6 +77,7 @@ const App = () => {
   const handleBackToStart = () => {
     setZoomFinished(false);
     setScreen(ScreenEnum.START);
+    resetIncorrectGuesses();
   };
 
   const renderDesktop = () =>

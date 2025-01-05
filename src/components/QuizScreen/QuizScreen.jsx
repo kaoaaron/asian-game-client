@@ -54,6 +54,7 @@ const ColoredButton = styled(Button)(({ answerStatus }) => ({
 
 const QuizScreen = ({ onBack }) => {
   const people = useQuizStore((state) => state.people);
+  const addIncorrectGuess = useQuizStore((state) => state.addIncorrectGuess);
   const [currentPersonIndex, setCurrentPersonIndex] = useState(0);
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -93,6 +94,7 @@ const QuizScreen = ({ onBack }) => {
       setScore((prevScore) => prevScore + 1);
     } else {
       setIsCorrect(false);
+      addIncorrectGuess(currentPerson._id);
     }
 
     setTimeout(() => {
