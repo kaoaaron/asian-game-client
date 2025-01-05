@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import "../../colors.css";
+import QuizComplete from "../QuizComplete/QuizComplete";
+import useQuizStore from "../../store";
 
 const ethnicities = [
   "Chinese",
@@ -50,7 +52,8 @@ const ColoredButton = styled(Button)(({ answerStatus }) => ({
   },
 }));
 
-const QuizScreen = ({ people, onBack }) => {
+const QuizScreen = ({ onBack }) => {
+  const people = useQuizStore((state) => state.people);
   const [currentPersonIndex, setCurrentPersonIndex] = useState(0);
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -119,36 +122,12 @@ const QuizScreen = ({ people, onBack }) => {
   if (currentPersonIndex >= totalQuestions) {
     handleCompleteQuiz();
     return (
-      <Stack
-        spacing={2}
-        alignItems="center"
-        justifyContent="center"
-        sx={{
-          width: "100%",
-          height: "100vh",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          display: "flex",
-          flexDirection: "column",
-          textAlign: "center", // Ensures text is centered
-        }}
-      >
-        <Typography variant="h5" sx={{ color: "white" }}>
-          Quiz Complete!
-        </Typography>
-        <Typography variant="h6" sx={{ color: "white" }}>
-          Your Score: {score}/{totalQuestions} ({scorePercentage}%)
-        </Typography>
-        <Button
-          variant="contained"
-          color="gold"
-          onClick={onBack}
-          sx={{ marginTop: "16px" }}
-        >
-          Back to Start Game
-        </Button>
-      </Stack>
+      <QuizComplete
+        score={score}
+        totalQuestions={totalQuestions}
+        scorePercentage={scorePercentage}
+        onBack={onBack}
+      />
     );
   }
 

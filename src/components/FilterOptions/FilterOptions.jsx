@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import {
-  Grid,
+  Box,
   Typography,
   Button,
   Radio,
   RadioGroup,
   FormControlLabel,
+  Stack,
 } from "@mui/material";
 
 const FilterOptions = ({ filters, onFilterChange, onStartQuiz }) => {
@@ -31,41 +32,36 @@ const FilterOptions = ({ filters, onFilterChange, onStartQuiz }) => {
     ${({ checked }) =>
       checked &&
       `
-    border: 1px solid var(--primary-gold);
-    background-color: var(--primary-gold);
-    color: black;
-  `}
+      border: 1px solid var(--primary-gold);
+      background-color: var(--primary-gold);
+      color: black;
+    `}
   `;
 
   return (
-    <Grid
-      container
-      direction="column"
-      alignItems="center"
-      spacing={6}
-      style={{
-        color: "white",
+    <Box
+      sx={{
         height: "100vh",
         display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
         justifyContent: "center",
+        color: "white",
       }}
     >
-      <Grid item>
-        <Typography variant="h5">Select Quiz Options</Typography>
-      </Grid>
-      <Grid
-        item
-        container
-        direction="column"
-        alignItems="center"
-        spacing={2}
-        style={{ color: "white" }} // Change text color to white for better contrast
-      >
-        <Grid item>
-          <Typography variant="p">Number of People:</Typography>
+      <Typography variant="h5" sx={{ mb: 4 }}>
+        Select Quiz Options
+      </Typography>
+
+      <Stack spacing={4} alignItems="center" sx={{ width: "100%" }}>
+        <Box>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            Number of People:
+          </Typography>
           <RadioGroup row>
             {[10, 30, 50, 100, 150, 200].map((item) => (
               <FormControlLabel
+                key={item}
                 sx={{ margin: "2px" }}
                 value={item}
                 control={
@@ -83,12 +79,16 @@ const FilterOptions = ({ filters, onFilterChange, onStartQuiz }) => {
               />
             ))}
           </RadioGroup>
-        </Grid>
-        <Grid item>
-          <Typography variant="p">Gender:</Typography>
+        </Box>
+
+        <Box>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            Gender:
+          </Typography>
           <RadioGroup row>
             {["both", "male", "female"].map((item) => (
               <FormControlLabel
+                key={item}
                 sx={{ margin: "2px" }}
                 value={item}
                 control={
@@ -106,14 +106,18 @@ const FilterOptions = ({ filters, onFilterChange, onStartQuiz }) => {
               />
             ))}
           </RadioGroup>
-        </Grid>
-      </Grid>
-      <Grid item>
-        <Button variant="contained" color="gold" onClick={handleStartQuiz}>
-          Start Quiz
-        </Button>
-      </Grid>
-    </Grid>
+        </Box>
+      </Stack>
+
+      <Button
+        variant="contained"
+        color="gold"
+        onClick={handleStartQuiz}
+        sx={{ mt: 4 }}
+      >
+        Start Quiz
+      </Button>
+    </Box>
   );
 };
 

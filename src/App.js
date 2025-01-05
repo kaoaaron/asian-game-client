@@ -6,6 +6,7 @@ import QuizScreen from "./components/QuizScreen/QuizScreen";
 import ParallaxLanding from "./components/ParallaxLanding/ParallaxLanding";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { fetchPeopleData } from "./api";
+import useQuizStore from "./store";
 
 const ScreenEnum = {
   START: "start",
@@ -48,9 +49,9 @@ const App = () => {
     numberOfPeople: 30,
     gender: "both",
   });
-  const [people, setPeople] = useState([]);
   const [zoomFinished, setZoomFinished] = useState(false);
 
+  const setPeople = useQuizStore((state) => state.setPeople);
   const isMobile = useMediaQuery("(max-width:980px)");
 
   const handleStartSinglePlayer = () => {
@@ -85,7 +86,7 @@ const App = () => {
             onStartQuiz={handleStartQuiz}
           />
         ) : screen === ScreenEnum.QUIZ ? (
-          <QuizScreen people={people} onBack={handleBackToStart} />
+          <QuizScreen onBack={handleBackToStart} />
         ) : null}
       </Box>
     ) : (
@@ -118,7 +119,7 @@ const App = () => {
           />
         )}
         {screen === ScreenEnum.QUIZ && (
-          <QuizScreen people={people} onBack={handleBackToStart} />
+          <QuizScreen onBack={handleBackToStart} />
         )}
       </Box>
     </Container>
