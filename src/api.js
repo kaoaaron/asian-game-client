@@ -65,7 +65,6 @@ export const fetchLeaderboardAvailability = async ({ scored, total }) => {
       `${process.env.REACT_APP_ASIAN_API_URL}${query}`
     );
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching leaderboard availability:", error);

@@ -8,7 +8,6 @@ const LeaderboardFormModal = ({ open, onClose, scored, total }) => {
   const [errMsg, setErrMsg] = useState("");
 
   const handleOnConfirm = async () => {
-    console.log("asd", name, scored, total);
     const res = await saveLeaderboardData({
       name,
       scored,
