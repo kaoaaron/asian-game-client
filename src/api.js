@@ -41,3 +41,53 @@ export const fetchPeopleData = async (filters) => {
     return [];
   }
 };
+
+export const fetchLeaderboardData = async () => {
+  const query = `/leaderboard`;
+
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_ASIAN_API_URL}${query}`
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching leaderboard data:", error);
+    return [];
+  }
+};
+
+export const fetchLeaderboardAvailability = async ({ scored, total }) => {
+  const query = `/is-leader?scored=${scored}&total=${total}`;
+
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_ASIAN_API_URL}${query}`
+    );
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching leaderboard availability:", error);
+    return [];
+  }
+};
+
+export const saveLeaderboardData = async (data) => {
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_ASIAN_API_URL}/leaderboard`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    return await response.json();
+  } catch (error) {
+    console.error("Error: ", error);
+    return { result: false };
+  }
+};
