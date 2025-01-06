@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import developerImage from "../../assets/images/landing/aaronprofile.png";
-import developerImage2 from "../../assets/images/landing/jyprofile.png";
-import uiImage from "../../assets/images/landing/seohui.png";
+import contributorsData from "./ContributorsData";
+import ContributorsProfileModal from "../ContributorsProfileModal/ContributorsProfileModal";
 
 const ContributorSection = styled.div`
   display: flex;
@@ -16,6 +15,12 @@ const ContributorImage = styled.img`
   height: 280px;
   border-radius: 50%;
   margin-bottom: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 
   @media (max-width: 980px) {
     width: 350px;
@@ -112,6 +117,7 @@ const ContributorProfile = ({
   description,
   ethnicity,
   setSelectedEthnicity,
+  onImageClick,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [buttonStates, setButtonStates] = useState({
@@ -139,7 +145,11 @@ const ContributorProfile = ({
 
   return (
     <ContributorSection>
-      <ContributorImage src={image} alt={name} />
+      <ContributorImage
+        src={image}
+        alt={name}
+        onClick={() => onImageClick({ name, description, ethnicity })}
+      />
       <ButtonRow>
         {!isFaded && (
           <>
@@ -177,36 +187,51 @@ const ContributorProfile = ({
 
 const Contributors = () => {
   const [selectedEthnicity, setSelectedEthnicity] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedContributor, setSelectedContributor] = useState(null);
+
+  const onImageClick = (contributor) => {
+    setSelectedContributor(contributor);
+    console.log(contributor, "asd2");
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
 
   return (
     <>
       <ContributorsHeader>Contributors</ContributorsHeader>
       <ContributorsRow>
-        <ContributorProfile
-          image={developerImage}
-          name="Aaron Kao"
-          description="Driving Developer"
-          ethnicity="Chinese"
-          selectedEthnicity={selectedEthnicity}
-          setSelectedEthnicity={setSelectedEthnicity}
-        />
-        <ContributorProfile
-          image={developerImage2}
-          name="Jiyoung Lim"
-          description="Developer"
-          ethnicity="Korean"
-          selectedEthnicity={selectedEthnicity}
-          setSelectedEthnicity={setSelectedEthnicity}
-        />
-        <ContributorProfile
-          image={uiImage}
-          name="Seohui Nam"
-          description="Designer"
-          ethnicity="Korean"
-          selectedEthnicity={selectedEthnicity}
-          setSelectedEthnicity={setSelectedEthnicity}
-        />
+        {contributorsData.map((contributor, index) => (
+          <ContributorProfile
+            key={index}
+            image={contributor.image}
+            name={contributor.name}
+            description={contributor.description}
+            ethnicity={contributor.ethnicity}
+            setSelectedEthnicity={setSelectedEthnicity}
+            onImageClick={() =>
+              onImageClick({
+                name: contributor.name,
+                description: contributor.profileDescription,
+                ethnicity: contributor.ethnicity,
+                image: contributor.profileImage,
+                linkedIn: contributor?.linkedIn,
+              })
+            }
+          />
+        ))}
       </ContributorsRow>
+
+      {selectedContributor && (
+        <ContributorsProfileModal
+          open={modalOpen}
+          onClose={handleCloseModal}
+          contributor={selectedContributor}
+        />
+      )}
     </>
   );
 };
