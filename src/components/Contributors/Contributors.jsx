@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import contributorsData from "./ContributorsData";
 import ContributorsProfileModal from "../ContributorsProfileModal/ContributorsProfileModal";
+import jynose from "../../assets/images/landing/jynose.png";
 
 const ContributorSection = styled.div`
   display: flex;
@@ -126,6 +127,9 @@ const ContributorProfile = ({
     Japanese: "",
   });
   const [isFaded, setIsFaded] = useState(false);
+  const [isLongPressed, setIsLongPressed] = useState(false);
+  const [currentImage, setCurrentImage] = useState(image);
+  let longPressTimer;
 
   const handleButtonClick = (selected) => {
     const isCorrect = selected === ethnicity;
@@ -143,12 +147,34 @@ const ContributorProfile = ({
     }, 500);
   };
 
+  const handleMouseDown = () => {
+    longPressTimer = setTimeout(() => {
+      setIsLongPressed(true);
+      setCurrentImage(jynose);
+    }, 5000);
+  };
+
+  const handleMouseUp = (event) => {
+    clearTimeout(longPressTimer);
+    if (isLongPressed) {
+      event.stopPropagation();
+    }
+  };
+
   return (
     <ContributorSection>
       <ContributorImage
-        src={image}
+        src={currentImage}
         alt={name}
-        onClick={() => onImageClick({ name, description, ethnicity })}
+        onClick={(event) => {
+          if (!isLongPressed) {
+            onImageClick({ name, description, ethnicity });
+          }
+        }}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onTouchStart={handleMouseDown}
+        onTouchEnd={handleMouseUp}
       />
       <ButtonRow>
         {!isFaded && (
