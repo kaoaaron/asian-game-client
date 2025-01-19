@@ -45,7 +45,7 @@ const DiscoverPeopleModal = ({ open, onClose }) => {
 
   return (
     <CustomModal open={open} onClose={onClose} title="Discover People">
-      <Box sx={{ marginBottom: 2 }}>
+      <Box sx={{ marginBottom: 2, minWidth: "300px" }}>
         <FormControl component="fieldset">
           <RadioGroup
             row

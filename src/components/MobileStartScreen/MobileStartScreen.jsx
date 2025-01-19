@@ -6,38 +6,15 @@ import TextSection from "../ParallaxLanding/TextSection";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-height: 100vh;
-  background-color: black;
   padding: 16px;
-  overflow: hidden;
 `;
 
 const ContentContainer = styled.div`
   display: flex;
+  min-height: 100vh;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
   flex-grow: 1;
-  height: 100vh;
-`;
-
-const Image = styled.img`
-  width: 100%;
-  max-width: 600px;
-  height: auto;
-  margin-bottom: 16px;
-  border-radius: 15px;
-  cursor: pointer;
-`;
-
-const StyledButton = styled(Button)`
-  width: 100%;
-  max-width: 400px;
-  margin: 8px 0;
-  padding: 16px;
-  font-size: 18px;
 `;
 
 const Title = styled(Typography)`
@@ -46,6 +23,24 @@ const Title = styled(Typography)`
   text-align: center;
   margin-bottom: 32px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+`;
+
+const Image = styled.img`
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+`;
+
+const StyledButton = styled(Button)`
+  width: 100%;
+  padding: 16px;
+  font-size: 18px;
+`;
+
+const ButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const MobileStartScreen = ({ onSinglePlayerClick }) => {
@@ -77,18 +72,19 @@ const MobileStartScreen = ({ onSinglePlayerClick }) => {
           alt="Single Player and Multiplayer"
           onClick={handleImageClick}
         />
-        <StyledButton
-          variant="contained"
-          color="gold"
-          onClick={onSinglePlayerClick}
-        >
-          Single Player
-        </StyledButton>
-        <StyledButton variant="contained" color="gold" disabled>
-          Play with Friends
-        </StyledButton>
+        <ButtonsContainer>
+          <StyledButton
+            variant="contained"
+            color="gold"
+            onClick={onSinglePlayerClick}
+          >
+            Single Player
+          </StyledButton>
+          <StyledButton variant="contained" color="gold" disabled>
+            Play with Friends
+          </StyledButton>
+        </ButtonsContainer>
       </ContentContainer>
-
       <TextSection />
     </Container>
   );
