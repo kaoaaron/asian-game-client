@@ -18,6 +18,7 @@ import eataaron from "../../assets/images/landing/eataaron.png";
 import leaderboardEaster from "../../assets/images/landing/leaderboardeaster.png";
 import glowLeaderboardEaster from "../../assets/images/landing/glowleaderboardeaster.png";
 import jyugly from "../../assets/images/landing/jyugly.png";
+import trophy from "../../assets/images/landing/trophy.png";
 import AnimatedTitle from "./AnimatedTitle";
 import TextSection from "./TextSection";
 import { useNavigate } from "react-router";
@@ -28,6 +29,24 @@ const zoomIn = keyframes`
   }
   to {
     transform: scale(15);
+  }
+`;
+
+const shake = keyframes`
+  0%, 20%, 100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(-10deg);
+  }
+  30% {
+    transform: rotate(10deg);
+  }
+  35% {
+    transform: rotate(-6deg);
+  }
+  40% {
+    transform: rotate(6deg);
   }
 `;
 
@@ -56,6 +75,22 @@ const ImageContainer = styled.div`
   #multiplayersign,
   #panda {
     z-index: 3;
+  }
+
+  #trophy {
+    margin: 30px;
+    z-index: 100;
+    width: 200px;
+    height: auto;
+    cursor: pointer;
+    animation: ${shake} 10s infinite;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: scale(2);
+      width: 210px;
+      animation-play-state: paused;
+    }
   }
 
   #playsign {
@@ -94,7 +129,6 @@ const ImageContainer = styled.div`
     width: 39vw;
     height: 26vh;
     z-index: 7;
-    cursor: pointer;
   }
 
   #foregroundtreesdiv2 {
@@ -104,7 +138,6 @@ const ImageContainer = styled.div`
     width: 18vw;
     height: 90vh;
     z-index: 7;
-    cursor: pointer;
   }
 
   #door-black-div {
@@ -160,7 +193,6 @@ const ImageContainer = styled.div`
     left: 20vw;
     background-color: #3498db;
     position: absolute;
-    cursor: pointer;
     z-index: 32;
     opacity: 0;
   }
@@ -319,6 +351,12 @@ const ParallaxLanding = ({ onZoomComplete }) => {
           />
         )}
         <img id="lefttop" src={lefttop} alt="lefttop" />
+        <img
+          id="trophy"
+          src={trophy}
+          alt="trophy"
+          onClick={() => navigate("/leaderboard")}
+        />
 
         <img id="playsign" src={playsign} alt="Play Sign" />
         <div
