@@ -217,6 +217,10 @@ const ParallaxLanding = ({ onZoomComplete }) => {
     }, 5000);
   };
 
+  const handleMultiplayerClick = () => {
+    window.location.href = "/multiplayer";
+  };
+
   const handleBacktreeMouseUp = () => {
     clearTimeout(backtreeTimeout.current);
   };
@@ -294,6 +298,7 @@ const ParallaxLanding = ({ onZoomComplete }) => {
           id="multiplayerbuttondiv"
           onMouseEnter={() => setMpHovered(true)}
           onMouseLeave={() => setMpHovered(false)}
+          onClick={handleMultiplayerClick}
         />
         <img
           id="multiplayersign"
