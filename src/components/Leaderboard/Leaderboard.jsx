@@ -4,6 +4,7 @@ import { fetchLeaderboardData } from "../../api";
 import {
   Button,
   Container,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   RadioGroup,
@@ -22,7 +23,7 @@ const Leaderboard = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState(30); //10, 30, 50, 100, 150, 200
-  const [filteredData, setFilteredData] = useState([]);
+  const [filteredData, setFilteredData] = useState();
 
   useEffect(() => {
     const fetch = async () => {
@@ -81,27 +82,35 @@ const Leaderboard = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredData.map((row, idx) => (
-              <TableRow
-                key={row.name}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {idx + 1}
+            {filteredData ? (
+              filteredData.map((row, idx) => (
+                <TableRow
+                  key={row.name}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {idx + 1}
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {row.name}
+                  </TableCell>
+                  <TableCell>
+                    {`${((row.scored / row.total) * 100).toFixed(2)}% (${
+                      row.scored
+                    }/${row.total})`}
+                  </TableCell>
+                  <TableCell>{`${
+                    row.completedAt.getMonth() + 1
+                  }/${row.completedAt.getDate()}, ${row.completedAt.getFullYear()}`}</TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={4} align="center">
+                  <CircularProgress />
                 </TableCell>
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell>
-                  {`${((row.scored / row.total) * 100).toFixed(2)}% (${
-                    row.scored
-                  }/${row.total})`}
-                </TableCell>
-                <TableCell>{`${
-                  row.completedAt.getMonth() + 1
-                }/${row.completedAt.getDate()}, ${row.completedAt.getFullYear()}`}</TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
