@@ -53,7 +53,7 @@ const Leaderboard = () => {
   return (
     <Container>
       <Typography variant="h1" sx={{ color: "gold", fontSize: "3rem" }}>
-        Leaderboard!
+        Leaderboard
       </Typography>
       <FormControl component="fieldset">
         <RadioGroup

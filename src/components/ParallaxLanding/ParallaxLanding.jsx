@@ -15,9 +15,12 @@ import embarassed from "../../assets/images/landing/embarassed.png";
 import aaron from "../../assets/images/landing/aaron.png";
 import lefttop from "../../assets/images/landing/lefttop.png";
 import eataaron from "../../assets/images/landing/eataaron.png";
+import leaderboardEaster from "../../assets/images/landing/leaderboardeaster.png";
+import glowLeaderboardEaster from "../../assets/images/landing/glowleaderboardeaster.png";
 import jyugly from "../../assets/images/landing/jyugly.png";
 import AnimatedTitle from "./AnimatedTitle";
 import TextSection from "./TextSection";
+import { useNavigate } from "react-router";
 
 const zoomIn = keyframes`
   from {
@@ -201,15 +204,18 @@ const ImageContainer = styled.div`
 
 const ParallaxLanding = ({ onZoomComplete }) => {
   const [hovered, setHovered] = useState(false);
+  const [easterHovered, setEasterHovered] = useState(false);
   const [mpHovered, setMpHovered] = useState(false);
   const [zoomed, setZoomed] = useState(false);
   const [transformOrigin, setTransformOrigin] = useState("0% 0%");
   const [doorOpened, setDoorOpened] = useState(false);
   const [foregroundTreesClicks, setForegroundTreesClicks] = useState(0);
   const [showImages, setShowImages] = useState(false);
+  const [renderLeaderboard, setRenderLeaderboard] = useState(false);
   const [showBacktree, setShowBacktree] = useState(true);
   const backtreeTimeout = useRef(null);
   const doorRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleBacktreeMouseDown = () => {
     backtreeTimeout.current = setTimeout(() => {
@@ -345,8 +351,24 @@ const ParallaxLanding = ({ onZoomComplete }) => {
         <img id="panda" src={panda} alt="Panda" />
         <div id="panda-div" />
         {!showBacktree && <img id="jyugly" src={jyugly} alt="jyugly" />}
-        {foregroundTreesClicks >= 10 && (
-          <img id="food-aaron" src={eataaron} alt="food-aaron" style={{}} />
+        {foregroundTreesClicks >= 10 && !renderLeaderboard && (
+          <img
+            id="food-aaron"
+            src={eataaron}
+            alt="food-aaron"
+            onClick={() => setRenderLeaderboard(true)}
+          />
+        )}
+        {renderLeaderboard && (
+          <img
+            id="leaderboardeaster"
+            src={easterHovered ? glowLeaderboardEaster : leaderboardEaster}
+            alt="leaderboardeaster"
+            onClick={() => navigate("/leaderboard")}
+            style={{ zIndex: 100, width: "auto", height: "auto" }}
+            onMouseEnter={() => setEasterHovered(true)}
+            onMouseLeave={() => setEasterHovered(false)}
+          />
         )}
         {showImages && (
           <img id="embarassed" src={embarassed} alt="Embarassed" />
