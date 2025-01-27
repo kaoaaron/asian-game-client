@@ -132,34 +132,35 @@ const TextSection = () => {
   const [gamesPlayedCount, setGamesPlayedCount] = useState(0);
 
   useEffect(() => {
+    const key = "count";
     const getVisitorCount = async () => {
-      const key = "visitor-count";
-      if (hasKey(key)) {
-        const { count, expires } = getItem(key);
-        if (expires > Date.now()) {
-          setVisitorCount(count);
-          return;
-        }
-      }
       const count = await fetchVisitorCount();
       setVisitorCount(count);
-      setItem(key, { count, expires: Date.now() + 48 * 60 * 1000 });
+      setItem(key, {
+        ...(getItem(key) ?? null),
+        visitorCount: count,
+        expires: Date.now() + 30 * 60 * 1000,
+      });
     };
 
     const getGamesPlayedCount = async () => {
-      const key = "played-count";
-      if (hasKey(key)) {
-        const { count, expires } = getItem(key);
-        if (expires > Date.now()) {
-          setVisitorCount(count);
-          return;
-        }
-      }
-
       const count = await fetchGamesPlayedCount();
       setGamesPlayedCount(count);
-      setItem(key, { count, expires: Date.now() + 48 * 60 * 1000 });
+      setItem(key, {
+        ...(getItem(key) ?? null),
+        playerCount: count,
+        expires: Date.now() + 30 * 60 * 1000,
+      });
     };
+
+    if (hasKey(key)) {
+      const { visitorCount, playerCount, expires } = getItem(key);
+      if (expires > Date.now()) {
+        setVisitorCount(visitorCount);
+        setGamesPlayedCount(playerCount);
+        return;
+      }
+    }
 
     getVisitorCount();
     getGamesPlayedCount();
