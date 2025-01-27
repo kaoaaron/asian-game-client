@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Link } from "@mui/material";
 import CustomModal from "../CustomModal/CustomModal";
+import jyfood from "../../assets/images/landing/jyfood.png";
 
 const ContributorsProfileModal = ({ open, onClose, contributor }) => {
-  if (!contributor) return null;
-
   const { image, name, description, ethnicity, linkedIn } = contributor;
+
+  const [backgroundImage, setBackgroundImage] = useState(
+    contributor.backgroundImage
+  );
+
+  const handleImageClick = () => {
+    if (name === "Jiyoung Lim") {
+      setBackgroundImage(jyfood);
+    }
+  };
+
+  useEffect(() => {
+    setBackgroundImage(contributor.backgroundImage);
+  }, [contributor]);
 
   return (
     <CustomModal open={open} onClose={onClose}>
@@ -16,38 +29,43 @@ const ContributorsProfileModal = ({ open, onClose, contributor }) => {
           gap: 3,
           alignItems: "flex-start",
           padding: 3,
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          borderRadius: "10px",
+          minHeight: "300px",
         }}
       >
-        {/* Image Box */}
         <Box
           sx={{
-            flex: "1", // Image box takes 1 part of the row
+            flex: "1",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             border: "4px solid #ddd",
+            maxWidth: "300px",
+            maxHeight: "300px",
             borderRadius: "50%",
-            padding: "8px",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
             backgroundColor: "#fff",
           }}
+          onClick={handleImageClick}
         >
           <img
             src={image}
             alt={name}
             style={{
-              width: "200px",
-              height: "200px",
+              width: "100%",
+              height: "100%",
               borderRadius: "50%",
               objectFit: "cover",
             }}
           />
         </Box>
-
-        {/* Text Box */}
         <Box
           sx={{
-            flex: "2", // Text box takes 2 parts of the row (making it half)
+            flex: "2",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -56,6 +74,7 @@ const ContributorsProfileModal = ({ open, onClose, contributor }) => {
             borderRadius: "8px",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
             backgroundColor: "#f9f9f9",
+            opacity: 0.8,
           }}
         >
           <Typography variant="h5" fontWeight="bold" sx={{ color: "#333" }}>

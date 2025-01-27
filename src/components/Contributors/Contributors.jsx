@@ -116,6 +116,7 @@ const ContributorProfile = ({
   image,
   name,
   description,
+  bgImage,
   ethnicity,
   setSelectedEthnicity,
   onImageClick,
@@ -218,7 +219,6 @@ const Contributors = () => {
 
   const onImageClick = (contributor) => {
     setSelectedContributor(contributor);
-    console.log(contributor, "asd2");
     setModalOpen(true);
   };
 
@@ -244,6 +244,7 @@ const Contributors = () => {
                 description: contributor.profileDescription,
                 ethnicity: contributor.ethnicity,
                 image: contributor.profileImage,
+                backgroundImage: contributor.backgroundImage,
                 linkedIn: contributor?.linkedIn,
               })
             }
