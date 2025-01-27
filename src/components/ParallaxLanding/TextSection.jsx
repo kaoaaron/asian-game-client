@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { fetchGamesPlayedCount, fetchVisitorCount } from "../../api";
 import Contributors from "../Contributors/Contributors";
+import { hasKey, setItem, getItem } from "../../utils/localStorage";
 
 const TextSectionContainer = styled.div`
   min-height: 100vh;
@@ -131,15 +132,37 @@ const TextSection = () => {
   const [gamesPlayedCount, setGamesPlayedCount] = useState(0);
 
   useEffect(() => {
+    const key = "count";
+    const msCacheExpiryTime = 1800000;
+
     const getVisitorCount = async () => {
       const count = await fetchVisitorCount();
       setVisitorCount(count);
+      setItem(key, {
+        ...(getItem(key) ?? null),
+        visitorCount: count,
+        expires: Date.now() + msCacheExpiryTime,
+      });
     };
 
     const getGamesPlayedCount = async () => {
       const count = await fetchGamesPlayedCount();
       setGamesPlayedCount(count);
+      setItem(key, {
+        ...(getItem(key) ?? null),
+        playerCount: count,
+        expires: Date.now() + msCacheExpiryTime,
+      });
     };
+
+    if (hasKey(key)) {
+      const { visitorCount, playerCount, expires } = getItem(key);
+      if (expires > Date.now()) {
+        setVisitorCount(visitorCount);
+        setGamesPlayedCount(playerCount);
+        return;
+      }
+    }
 
     getVisitorCount();
     getGamesPlayedCount();
