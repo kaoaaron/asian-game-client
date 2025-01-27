@@ -133,13 +133,15 @@ const TextSection = () => {
 
   useEffect(() => {
     const key = "count";
+    const msCacheExpiryTime = 1800000;
+
     const getVisitorCount = async () => {
       const count = await fetchVisitorCount();
       setVisitorCount(count);
       setItem(key, {
         ...(getItem(key) ?? null),
         visitorCount: count,
-        expires: Date.now() + 30 * 60 * 1000,
+        expires: Date.now() + msCacheExpiryTime,
       });
     };
 
@@ -149,7 +151,7 @@ const TextSection = () => {
       setItem(key, {
         ...(getItem(key) ?? null),
         playerCount: count,
-        expires: Date.now() + 30 * 60 * 1000,
+        expires: Date.now() + msCacheExpiryTime,
       });
     };
 
