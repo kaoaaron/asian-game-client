@@ -127,19 +127,21 @@ const DonateButton = styled.input`
   }
 `;
 
+const VISITORSKEY = "visitedCount";
+const PLAYEDGAMESKEY = "playedCount";
+const msCacheExpiryTime = 1800000;
+
 const TextSection = () => {
   const [visitorCount, setVisitorCount] = useState(0);
   const [gamesPlayedCount, setGamesPlayedCount] = useState(0);
 
   useEffect(() => {
-    const key = "count";
-    const msCacheExpiryTime = 1800000;
-
     const getVisitorCount = async () => {
       const count = await fetchVisitorCount();
+      console.log(count);
       setVisitorCount(count);
-      setItem(key, {
-        ...(getItem(key) ?? null),
+      setItem(VISITORSKEY, {
+        ...(getItem(VISITORSKEY) ?? null),
         visitorCount: count,
         expires: Date.now() + msCacheExpiryTime,
       });
@@ -148,24 +150,30 @@ const TextSection = () => {
     const getGamesPlayedCount = async () => {
       const count = await fetchGamesPlayedCount();
       setGamesPlayedCount(count);
-      setItem(key, {
-        ...(getItem(key) ?? null),
+      setItem(PLAYEDGAMESKEY, {
+        ...(getItem(PLAYEDGAMESKEY) ?? null),
         playerCount: count,
         expires: Date.now() + msCacheExpiryTime,
       });
     };
 
-    if (hasKey(key)) {
-      const { visitorCount, playerCount, expires } = getItem(key);
+    if (hasKey(PLAYEDGAMESKEY)) {
+      const { playerCount, expires } = getItem(PLAYEDGAMESKEY);
       if (expires > Date.now()) {
-        setVisitorCount(visitorCount);
         setGamesPlayedCount(playerCount);
-        return;
       }
+    } else {
+      getGamesPlayedCount();
     }
 
-    getVisitorCount();
-    getGamesPlayedCount();
+    if (hasKey(VISITORSKEY)) {
+      const { visitorCount, expires } = getItem(VISITORSKEY);
+      if (expires > Date.now()) {
+        setVisitorCount(visitorCount);
+      }
+    } else {
+      getVisitorCount();
+    }
   }, []);
 
   return (
