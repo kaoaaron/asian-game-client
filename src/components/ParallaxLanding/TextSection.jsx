@@ -138,7 +138,6 @@ const TextSection = () => {
   useEffect(() => {
     const getVisitorCount = async () => {
       const count = await fetchVisitorCount();
-      console.log(count);
       setVisitorCount(count);
       setItem(VISITORSKEY, {
         ...(getItem(VISITORSKEY) ?? null),
@@ -161,6 +160,8 @@ const TextSection = () => {
       const { playerCount, expires } = getItem(PLAYEDGAMESKEY);
       if (expires > Date.now()) {
         setGamesPlayedCount(playerCount);
+      } else {
+        getGamesPlayedCount();
       }
     } else {
       getGamesPlayedCount();
@@ -170,6 +171,8 @@ const TextSection = () => {
       const { visitorCount, expires } = getItem(VISITORSKEY);
       if (expires > Date.now()) {
         setVisitorCount(visitorCount);
+      } else {
+        getVisitorCount();
       }
     } else {
       getVisitorCount();
