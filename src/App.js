@@ -80,18 +80,39 @@ const App = () => {
     resetIncorrectGuesses();
   };
 
+  if (screen === ScreenEnum.QUIZ) {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Box
+          sx={{
+            ...(isMobile && {
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: "100vh",
+              padding: "0 16px",
+              maxWidth: "600px",
+              margin: "0 auto",
+            }),
+          }}
+        >
+          <QuizScreen onBack={handleBackToStart} />
+        </Box>
+      </ThemeProvider>
+    );
+  }
+
   const renderDesktop = () =>
     zoomFinished ? (
       <Box>
-        {screen === ScreenEnum.FILTERS ? (
+        {screen === ScreenEnum.FILTERS && (
           <FilterOptions
             filters={filters}
             onFilterChange={handleFilterChange}
             onStartQuiz={handleStartQuiz}
           />
-        ) : screen === ScreenEnum.QUIZ ? (
-          <QuizScreen onBack={handleBackToStart} />
-        ) : null}
+        )}
       </Box>
     ) : (
       <ParallaxLanding
@@ -121,9 +142,6 @@ const App = () => {
             onFilterChange={handleFilterChange}
             onStartQuiz={handleStartQuiz}
           />
-        )}
-        {screen === ScreenEnum.QUIZ && (
-          <QuizScreen onBack={handleBackToStart} />
         )}
       </Box>
     </Container>
