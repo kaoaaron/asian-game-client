@@ -328,21 +328,19 @@ const Globe = () => {
           right: "2rem",
           display: "flex",
           flexDirection: "column",
+          alignItems: "center",
         }}
       >
+        <p>Top 5 most played contries</p>
         {topCountryNames.map((val, idx) => (
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <p style={{ fontSize: "0.8rem", marginRight: "5px" }}>{`Top #${
-              idx + 1
-            }`}</p>
+          <div style={{ display: "flex", alignItems: "center" }} key={idx}>
             <Button
               variant="outlined"
               color="gold"
               sx={{ width: "16rem", my: "5px" }}
               onClick={() => handleCountryClick(idx)}
-              key={idx}
             >
-              {topCountryVisibility[idx] ? val : `Most played Country`}
+              {topCountryVisibility[idx] ? val : `Top #${idx + 1}`}
             </Button>
           </div>
         ))}
