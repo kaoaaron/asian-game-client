@@ -4,6 +4,7 @@ import DiscoverPeopleModal from "../DiscoverPeopleModal.jsx/DiscoverPeopleModal"
 import { fetchLeaderboardAvailability } from "../../api";
 import LeaderboardFormModal from "./LeaderboardFormModal";
 import { useNavigate } from "react-router";
+import useQuizStore from "../../store";
 
 const QuizComplete = ({ score, totalQuestions, scorePercentage, onBack }) => {
   const navigate = useNavigate();
@@ -13,6 +14,9 @@ const QuizComplete = ({ score, totalQuestions, scorePercentage, onBack }) => {
   const handleCloseModal = () => setIsModalOpen(false);
   const handleCloseLBModal = () => setIsLBModalOpen(false);
   const handleViewLeaderboard = () => navigate("/leaderboard");
+  const leaderboardQualified = useQuizStore(
+    (state) => state.leaderboardQualified
+  );
 
   useEffect(() => {
     async function fetchData() {
@@ -24,7 +28,9 @@ const QuizComplete = ({ score, totalQuestions, scorePercentage, onBack }) => {
         setIsLBModalOpen(true);
       }
     }
-    fetchData();
+    if (leaderboardQualified) {
+      fetchData();
+    }
   }, []);
 
   return (

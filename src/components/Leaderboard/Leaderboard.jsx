@@ -22,7 +22,7 @@ import {
 const Leaderboard = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
-  const [filter, setFilter] = useState(30); //10, 30, 50, 100, 150, 200
+  const [filter, setFilter] = useState(10); //10, 30, 50, 100, 150, 200
   const [filteredData, setFilteredData] = useState();
 
   useEffect(() => {

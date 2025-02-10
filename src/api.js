@@ -26,9 +26,11 @@ export const fetchGamesPlayedCount = async () => {
 };
 
 export const fetchPeopleData = async (filters) => {
-  const { numberOfPeople, gender } = filters;
+  const { numberOfPeople, gender, minAge, maxAge, occupationsList } = filters;
   const genderFilter = gender === "both" ? "" : `&gender=${gender}`;
-  const query = `/people?limit=${numberOfPeople}${genderFilter}`;
+  const query = `/people?limit=${numberOfPeople}${genderFilter}minAge=${minAge}&maxAge=${maxAge}&occupations=${occupationsList.join(
+    ","
+  )}`;
 
   try {
     const response = await fetch(

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Container, Box, useMediaQuery, CssBaseline } from "@mui/material";
 import MobileStartScreen from "./components/MobileStartScreen/MobileStartScreen";
 import FilterOptions from "./components/FilterOptions/FilterOptions";
@@ -6,13 +6,7 @@ import QuizScreen from "./components/QuizScreen/QuizScreen";
 import ParallaxLanding from "./components/ParallaxLanding/ParallaxLanding";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { fetchPeopleData } from "./api";
-import useQuizStore from "./store";
-
-const ScreenEnum = {
-  START: "start",
-  FILTERS: "filters",
-  QUIZ: "quiz",
-};
+import useQuizStore, { ScreenEnum } from "./store";
 
 const theme = createTheme({
   palette: {
@@ -44,26 +38,26 @@ const theme = createTheme({
 });
 
 const App = () => {
-  const [screen, setScreen] = useState(ScreenEnum.START);
-  const [filters, setFilters] = useState({
-    numberOfPeople: 30,
-    gender: "both",
-  });
-  const [zoomFinished, setZoomFinished] = useState(false);
-
-  const setPeople = useQuizStore((state) => state.setPeople);
   const isMobile = useMediaQuery("(max-width:980px)");
-  const resetIncorrectGuesses = useQuizStore(
-    (state) => state.resetIncorrectGuesses
-  );
 
+  const screen = useQuizStore((state) => state.screen);
+  const setScreen = useQuizStore((state) => state.setScreen);
+  const filters = useQuizStore((state) => state.filters);
+  const setFilters = useQuizStore((state) => state.setFilters);
+  const zoomFinished = useQuizStore((state) => state.zoomFinished);
+  const setZoomFinished = useQuizStore((state) => state.setZoomFinished);
+  const setPeople = useQuizStore((state) => state.setPeople);
+  const resetToStart = useQuizStore((state) => state.resetToStart);
+  const setLeaderboardQualified = useQuizStore(
+    (state) => state.setLeaderboardQualified
+  );
   const handleStartSinglePlayer = () => {
+    setLeaderboardQualified(true);
     setScreen(ScreenEnum.FILTERS);
   };
 
   const handleFilterChange = (e) => {
     setFilters({
-      ...filters,
       [e.target.name]: e.target.value,
     });
   };
@@ -72,12 +66,6 @@ const App = () => {
     const data = await fetchPeopleData(filters);
     setPeople(data);
     setScreen(ScreenEnum.QUIZ);
-  };
-
-  const handleBackToStart = () => {
-    setZoomFinished(false);
-    setScreen(ScreenEnum.START);
-    resetIncorrectGuesses();
   };
 
   if (screen === ScreenEnum.QUIZ) {
@@ -97,7 +85,7 @@ const App = () => {
             }),
           }}
         >
-          <QuizScreen onBack={handleBackToStart} />
+          <QuizScreen onBack={resetToStart} />
         </Box>
       </ThemeProvider>
     );
@@ -118,6 +106,7 @@ const App = () => {
       <ParallaxLanding
         onZoomComplete={() => {
           setZoomFinished(true);
+          setLeaderboardQualified(true);
           setScreen(ScreenEnum.FILTERS);
         }}
       />
