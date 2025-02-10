@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useMediaQuery } from "@mui/material";
 import styled from "styled-components";
 import { fetchGamesPlayedCount, fetchVisitorCount } from "../../api";
 import Contributors from "../Contributors/Contributors";
@@ -135,6 +136,7 @@ const msCacheExpiryTime = 1800000;
 const TextSection = () => {
   const [visitorCount, setVisitorCount] = useState(0);
   const [gamesPlayedCount, setGamesPlayedCount] = useState(0);
+  const isMobile = useMediaQuery("(max-width:980px)");
 
   useEffect(() => {
     const getVisitorCount = async () => {
@@ -211,7 +213,7 @@ const TextSection = () => {
           <VisitorCount>{gamesPlayedCount}</VisitorCount>
         </div>
       </VisitorCountSection>
-      <Globe />
+      {!isMobile && <Globe />}
       <Contributors />
       <DonationSection>
         <h2>Support Our Project</h2>

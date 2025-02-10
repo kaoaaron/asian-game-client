@@ -216,6 +216,6 @@ const countryMap = {
   ZW: "Zimbabwe",
 };
 
-export default getCountryName = (iso2) => {
+export const getCountryName = (iso2) => {
   return countryMap[iso2] || "Unknown Country";
 };
