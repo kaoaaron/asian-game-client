@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { fetchGamesPlayedCount, fetchVisitorCount } from "../../api";
 import Contributors from "../Contributors/Contributors";
 import { hasKey, setItem, getItem } from "../../utils/localStorage";
+import Globe from "./Globe";
 
 const TextSectionContainer = styled.div`
   min-height: 100vh;
@@ -210,6 +211,7 @@ const TextSection = () => {
           <VisitorCount>{gamesPlayedCount}</VisitorCount>
         </div>
       </VisitorCountSection>
+      <Globe />
       <Contributors />
       <DonationSection>
         <h2>Support Our Project</h2>

@@ -412,7 +412,6 @@ const ParallaxLanding = ({ onZoomComplete }) => {
           <img id="embarassed" src={embarassed} alt="Embarassed" />
         )}
       </ImageContainer>
-
       <TextSection />
     </>
   );
