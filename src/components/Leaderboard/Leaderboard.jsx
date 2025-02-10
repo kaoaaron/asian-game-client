@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import useQuizStore, { ScreenEnum } from "../../store";
 import { fetchLeaderboardData } from "../../api";
 import {
   Button,
@@ -21,6 +22,8 @@ import {
 
 const Leaderboard = () => {
   const navigate = useNavigate();
+  const setScreen = useQuizStore((state) => state.setScreen);
+  const setZoomFinished = useQuizStore((state) => state.setZoomFinished);
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState(10); //10, 30, 50, 100, 150, 200
   const [filteredData, setFilteredData] = useState();
@@ -117,7 +120,11 @@ const Leaderboard = () => {
 
       <Button
         variant="contained"
-        onClick={() => navigate("/")}
+        onClick={() => {
+          setZoomFinished(false);
+          setScreen(ScreenEnum.START);
+          navigate("/");
+        }}
         sx={{ display: "flex", margin: "16px auto" }}
       >
         Back to Start Game
