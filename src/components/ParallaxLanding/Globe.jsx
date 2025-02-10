@@ -332,7 +332,7 @@ const Globe = () => {
           alignItems: "center",
         }}
       >
-        <p>Top 5 most played contries</p>
+        <p>Top 5 most played countries</p>
         {topCountryNames.map((val, idx) => (
           <div style={{ display: "flex", alignItems: "center" }} key={idx}>
             <Button
