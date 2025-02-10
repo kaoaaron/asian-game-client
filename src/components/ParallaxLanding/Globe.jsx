@@ -4,6 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Button } from "@mui/material";
 import { getCountryName } from "../../utils/countryCode";
 import { fetchTopCountryCodes } from "../../api";
+import VisitorChart from "./VisitorChart";
 
 const Globe = () => {
   const mountRef = useRef(null);
@@ -344,6 +345,15 @@ const Globe = () => {
             </Button>
           </div>
         ))}
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          bottom: "2rem",
+          right: "2rem",
+        }}
+      >
+        <VisitorChart />
       </div>
     </div>
   );

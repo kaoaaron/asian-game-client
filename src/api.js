@@ -38,6 +38,19 @@ export const fetchTopCountryCodes = async (count) => {
   }
 };
 
+export const fetchVisitorCountHistory = async () => {
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_ASIAN_API_URL}/visitor-count-history`
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
 export const fetchPeopleData = async (filters) => {
   const { numberOfPeople, gender } = filters;
   const genderFilter = gender === "both" ? "" : `&gender=${gender}`;
