@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { Button } from "@mui/material";
+import { getCountryName } from "../../utils/countryCode";
+import { fetchTopCountryCodes } from "../../api";
 
 const Globe = () => {
   const mountRef = useRef(null);
@@ -12,6 +15,11 @@ const Globe = () => {
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const countriesGroupRef = useRef(new THREE.Group());
+
+  const [topCountryNames, setTopCountryNames] = useState([]);
+  const [topCountryVisibility, setTopCountryVisibility] = useState(
+    Array(5).fill(false)
+  );
 
   const latLongToVector3 = (lat, long, radius) => {
     const phi = (90 - lat) * (Math.PI / 180);
@@ -99,7 +107,7 @@ const Globe = () => {
     controls.enableRotate = true;
     controls.enableZoom = true;
     controls.rotateSpeed = 0.5;
-    controls.minDistance = 1.1;
+    controls.minDistance = 1.5;
     controls.maxDistance = 2;
     controlsRef.current = controls;
 
@@ -178,13 +186,26 @@ const Globe = () => {
   };
 
   useEffect(() => {
+    const setTopPlayedCountries = async () => {
+      const data = await fetchTopCountryCodes(5);
+      setTopCountryNames(data.map((x) => getCountryName(x.countryCode)));
+    };
+
+    setTopPlayedCountries();
+
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleCountrySelect = (event) => {
-    const selectedCountryName = event.target.value;
+  const handleCountryClick = (idx) => {
+    const selectedCountryName = topCountryNames[idx];
     setSelectedCountry(selectedCountryName);
+    if (!topCountryVisibility[idx]) {
+      setTopCountryVisibility((prevState) => ({
+        ...prevState,
+        [idx]: true,
+      }));
+    }
 
     countriesGroupRef.current.traverse((child) => {
       if (child.userData?.name) {
@@ -237,7 +258,7 @@ const Globe = () => {
       centroid.divideScalar(totalPoints);
       centroid.normalize();
 
-      const distance = 1.5;
+      const distance = 2;
       const targetPosition = centroid.multiplyScalar(distance);
 
       const lookAtMatrix = new THREE.Matrix4();
@@ -282,27 +303,50 @@ const Globe = () => {
   };
 
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
-      <select
-        onChange={handleCountrySelect}
-        value={selectedCountry || ""}
+    <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
+      <div
+        ref={mountRef}
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          left: "-40vw",
+        }}
+      />
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          position: "absolute",
+          left: "-40vw",
+        }}
+      ></div>
+      <div
         style={{
           position: "absolute",
-          top: "20px",
-          left: "20px",
-          zIndex: 1000,
-          padding: "8px",
-          fontSize: "16px",
+          top: "2rem",
+          right: "2rem",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <option value="">Select a country</option>
-        {countries.map((country, index) => (
-          <option key={index} value={country}>
-            {country}
-          </option>
+        {topCountryNames.map((val, idx) => (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <p style={{ fontSize: "0.8rem", marginRight: "5px" }}>{`Top #${
+              idx + 1
+            }`}</p>
+            <Button
+              variant="outlined"
+              color="gold"
+              sx={{ width: "16rem", my: "5px" }}
+              onClick={() => handleCountryClick(idx)}
+              key={idx}
+            >
+              {topCountryVisibility[idx] ? val : `Most played Country`}
+            </Button>
+          </div>
         ))}
-      </select>
-      <div ref={mountRef} style={{ width: "100%", height: "100%" }} />
+      </div>
     </div>
   );
 };
