@@ -259,7 +259,7 @@ const Globe = () => {
       centroid.divideScalar(totalPoints);
       centroid.normalize();
 
-      const distance = 2;
+      const distance = 1.5;
       const targetPosition = centroid.multiplyScalar(distance);
 
       const lookAtMatrix = new THREE.Matrix4();

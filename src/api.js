@@ -54,7 +54,7 @@ export const fetchVisitorCountHistory = async () => {
 export const fetchPeopleData = async (filters) => {
   const { numberOfPeople, gender, minAge, maxAge, occupationsList } = filters;
   const genderFilter = gender === "both" ? "" : `&gender=${gender}`;
-  const query = `/people?limit=${numberOfPeople}${genderFilter}minAge=${minAge}&maxAge=${maxAge}&occupations=${occupationsList.join(
+  const query = `/people?limit=${numberOfPeople}${genderFilter}&minAge=${minAge}&maxAge=${maxAge}&occupations=${occupationsList.join(
     ","
   )}`;
 
