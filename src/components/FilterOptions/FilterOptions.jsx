@@ -3,6 +3,7 @@ import ManIcon from "@mui/icons-material/Man";
 import WomanIcon from "@mui/icons-material/Woman";
 import WcIcon from "@mui/icons-material/Wc";
 import styled from "styled-components";
+import jyback from "../../assets/images/landing/jyback.png";
 import { fetchPeopleData } from "../../api";
 import {
   getSortedCategories,
@@ -141,6 +142,20 @@ const FilterOptions = () => {
   );
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [isBackgroundVisible, setIsBackgroundVisible] = useState(false);
+  const [timer, setTimer] = useState(null);
+
+  const handleMouseDown = () => {
+    setTimer(
+      setTimeout(() => {
+        setIsBackgroundVisible(true);
+      }, 5000)
+    );
+  };
+
+  const handleMouseUp = () => {
+    clearTimeout(timer);
+  };
 
   const validateAge = (value) => {
     if (value === "") return value;
@@ -248,6 +263,9 @@ const FilterOptions = () => {
         color: "white",
         border: "thick double gold",
         position: "relative",
+        backgroundImage: isBackgroundVisible ? `url(${jyback})` : "none",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
       }}
     >
       {!isMobile && (
@@ -582,6 +600,8 @@ const FilterOptions = () => {
               backgroundColor: "#e6b800",
             },
           }}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
           onClick={handleStartQuiz}
           disabled={isButtonDisabled}
         >
