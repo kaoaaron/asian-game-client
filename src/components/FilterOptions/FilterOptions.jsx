@@ -22,6 +22,8 @@ import {
   MenuItem,
   Checkbox,
   ListItemText,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import useQuizStore, { ScreenEnum } from "../../store";
 
@@ -58,12 +60,18 @@ const StyledButtonLabel = styled.span`
   }
 `;
 
+const NumberButtonLabel = styled(StyledButtonLabel)`
+  padding: ${(props) => (props.isMobile ? "8px 10px" : "12px 20px")};
+  font-size: ${(props) => (props.isMobile ? "14px" : "16px")};
+`;
+
 const OptionContainer = styled(Box)`
   display: flex;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 12px;
   overflow: hidden;
   width: fit-content;
+  max-width: 100%;
   margin: auto;
   background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(5px);
@@ -131,6 +139,8 @@ const FilterOptions = () => {
   const setLeaderboardQualified = useQuizStore(
     (state) => state.setLeaderboardQualified
   );
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const validateAge = (value) => {
     if (value === "") return value;
@@ -236,37 +246,48 @@ const FilterOptions = () => {
         alignItems: "center",
         justifyContent: "center",
         color: "white",
-        paddingTop: "30px",
         border: "thick double gold",
+        position: "relative",
       }}
     >
-      <Button
-        variant="contained"
-        sx={{
-          position: "absolute",
-          top: "20px",
-          left: "20px",
-          zIndex: 1,
-          backgroundColor: "#ffd700",
-          color: "#000",
-          "&:hover": {
-            backgroundColor: "#e6b800",
-          },
-        }}
-        onClick={handleBack}
-      >
-        Back
-      </Button>
+      {!isMobile && (
+        <Button
+          variant="contained"
+          sx={{
+            position: "absolute",
+            top: "20px",
+            left: "20px",
+            backgroundColor: "#ffd700",
+            color: "#000",
+            "&:hover": {
+              backgroundColor: "#e6b800",
+            },
+          }}
+          onClick={handleBack}
+        >
+          Back
+        </Button>
+      )}
 
-      <Typography
-        variant="h4"
-        sx={{ mb: 4, fontWeight: "bold", letterSpacing: "1px" }}
-      >
-        Select Quiz Options
-      </Typography>
+      {!isMobile && (
+        <Typography
+          variant="h4"
+          sx={{ mb: 4, fontWeight: "bold", letterSpacing: "1px" }}
+        >
+          Select Quiz Options
+        </Typography>
+      )}
 
-      <Stack spacing={4} alignItems="center" sx={{ width: "100%" }}>
-        <Box sx={{ textAlign: "center" }} tabIndex={0} ref={numberRef}>
+      <Stack
+        spacing={isMobile ? 2 : 4}
+        alignItems="center"
+        sx={{ width: "100%" }}
+      >
+        <Box
+          sx={{ textAlign: "center", padding: "10px" }}
+          tabIndex={0}
+          ref={numberRef}
+        >
           <Typography variant="h6" sx={{ mb: 2, fontWeight: "500" }}>
             Number of People
           </Typography>
@@ -285,23 +306,30 @@ const FilterOptions = () => {
                     />
                   }
                   label={
-                    <StyledButtonLabel
+                    <NumberButtonLabel
                       checked={+localFilters.numberOfPeople === item}
+                      isMobile={isMobile}
                     >
                       {item}
-                    </StyledButtonLabel>
+                    </NumberButtonLabel>
                   }
                 />
               ))}
             </RadioGroup>
           </OptionContainer>
         </Box>
-
-        <Typography>
+        <Typography sx={{ textAlign: "center" }}>
           Using the options below will disqualify you from the leaderboard.
         </Typography>
-
-        <Box sx={{ display: "flex", gap: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 2,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <Box
             sx={{
               display: "flex",
@@ -320,7 +348,7 @@ const FilterOptions = () => {
               Gender
             </Typography>
             <OptionContainer>
-              <RadioGroup row sx={{ flexWrap: "nowrap" }}>
+              <RadioGroup row sx={{ flexWrap: "nowrap", height: "40px" }}>
                 {genderOptions.map((item) => (
                   <FormControlLabel
                     key={item}
@@ -358,18 +386,36 @@ const FilterOptions = () => {
               borderRadius: "16px",
             }}
           >
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: "500" }}>
+            <Typography variant="h6" sx={{ fontWeight: "500" }}>
               Age Range
             </Typography>
+            <Box
+              sx={{
+                height: "20px",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              {ageError && (
+                <Typography color="error" variant="caption">
+                  {ageError}
+                </Typography>
+              )}
+            </Box>
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                gap: 2,
               }}
             >
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                }}
+              >
                 <StyledTextField
                   type="number"
                   name="minAge"
@@ -389,20 +435,6 @@ const FilterOptions = () => {
                   size="small"
                   error={!!ageError}
                 />
-              </Box>
-              <Box
-                sx={{
-                  height: "20px",
-                  display: "flex",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                }}
-              >
-                {ageError && (
-                  <Typography color="error" variant="caption">
-                    {ageError}
-                  </Typography>
-                )}
               </Box>
             </Box>
           </Box>
@@ -451,9 +483,11 @@ const FilterOptions = () => {
                 }}
                 sx={{
                   width: "200px",
+                  height: "40px",
                   color: "white",
                   "& .MuiOutlinedInput-notchedOutline": {
                     borderColor: "rgba(255, 255, 255, 0.3)",
+                    borderRadius: "10px",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
                     borderColor: "rgba(255, 255, 255, 0.5)",
@@ -467,6 +501,7 @@ const FilterOptions = () => {
                   "& .MuiOutlinedInput-root": {
                     display: "flex",
                     alignItems: "center",
+                    borderRadius: "4px",
                   },
                 }}
                 MenuProps={{
@@ -513,23 +548,46 @@ const FilterOptions = () => {
         </Box>
       </Stack>
 
-      <Button
-        variant="contained"
+      <Box
         sx={{
-          mt: 4,
-          padding: "12px 24px",
-          fontSize: "18px",
-          backgroundColor: "#ffd700",
-          color: "#000",
-          "&:hover": {
-            backgroundColor: "#e6b800",
-          },
+          display: "flex",
+          gap: "16px",
+          alignItems: "center",
+          margin: "30px",
         }}
-        onClick={handleStartQuiz}
-        disabled={isButtonDisabled}
       >
-        Start Quiz
-      </Button>
+        {isMobile && (
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: "#ffd700",
+              color: "#000",
+              "&:hover": {
+                backgroundColor: "#e6b800",
+              },
+            }}
+            onClick={handleBack}
+          >
+            Back
+          </Button>
+        )}
+        <Button
+          variant="contained"
+          sx={{
+            padding: isMobile ? "8px 8px" : "12px 24px",
+            fontSize: isMobile ? "12px" : "18px",
+            backgroundColor: "#ffd700",
+            color: "#000",
+            "&:hover": {
+              backgroundColor: "#e6b800",
+            },
+          }}
+          onClick={handleStartQuiz}
+          disabled={isButtonDisabled}
+        >
+          Start Quiz
+        </Button>
+      </Box>
     </Box>
   );
 };
