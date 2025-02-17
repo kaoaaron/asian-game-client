@@ -304,38 +304,50 @@ const Globe = () => {
   };
 
   return (
-    <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
+    <div
+      style={{
+        position: "relative",
+        height: "100%",
+        width: "100%",
+        overflow: "visible",
+      }}
+    >
       <div
         ref={mountRef}
         style={{
+          top: 0,
           width: "100%",
           height: "100%",
           position: "absolute",
           left: "-40vw",
+          zIndex: 1,
         }}
       />
+
       <div
         style={{
-          width: "100vw",
-          height: "100vh",
-          position: "absolute",
-          left: "-40vw",
-        }}
-      ></div>
-      <div
-        style={{
-          position: "absolute",
-          top: "2rem",
-          right: "2rem",
+          position: "relative",
+          minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          justifyContent: "space-between",
+          padding: "2rem",
+          zIndex: 2,
         }}
       >
-        <p>Top 5 most played countries</p>
-        {topCountryNames.map((val, idx) => (
-          <div style={{ display: "flex", alignItems: "center" }} key={idx}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "0.5rem",
+          }}
+        >
+          <p>Top 5 most played countries</p>
+          {topCountryNames.map((val, idx) => (
             <Button
+              key={idx}
               variant="outlined"
               color="gold"
               sx={{ width: "16rem", my: "5px" }}
@@ -343,17 +355,12 @@ const Globe = () => {
             >
               {topCountryVisibility[idx] ? val : `Top #${idx + 1}`}
             </Button>
-          </div>
-        ))}
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          bottom: "2rem",
-          right: "2rem",
-        }}
-      >
-        <VisitorChart />
+          ))}
+        </div>
+
+        <div>
+          <VisitorChart />
+        </div>
       </div>
     </div>
   );

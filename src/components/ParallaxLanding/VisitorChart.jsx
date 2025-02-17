@@ -87,7 +87,14 @@ const VisitorChart = () => {
   }, []);
 
   return (
-    <div style={{ width: "40vw", height: "45vh" }}>
+    <div
+      style={{
+        width: "40vw",
+        height: "45vh",
+        backgroundColor: "#D3D3D3",
+        borderRadius: "16px",
+      }}
+    >
       <canvas ref={chartRef}></canvas>
     </div>
   );

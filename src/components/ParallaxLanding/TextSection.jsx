@@ -6,22 +6,6 @@ import Contributors from "../Contributors/Contributors";
 import { hasKey, setItem, getItem } from "../../utils/localStorage";
 import Globe from "./Globe";
 
-const TextSectionContainer = styled.div`
-  min-height: 100vh;
-  padding: 2rem;
-  background-color: #000;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-
-  @media (max-width: 980px) {
-    padding: 1rem;
-  }
-`;
-
 const AboutSection = styled.div`
   margin-bottom: 1rem;
   text-align: center;
@@ -47,6 +31,28 @@ const AboutSection = styled.div`
   }
 `;
 
+const TextSectionContainer = styled.div`
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  position: relative;
+  overflow: visible;
+
+  & > * {
+    overflow: visible;
+  }
+
+  @media (max-width: 980px) {
+    padding: 1rem;
+  }
+`;
+
 const VisitorCountSection = styled.div`
   text-align: center;
   display: flex;
@@ -55,6 +61,8 @@ const VisitorCountSection = styled.div`
   align-items: center;
   gap: 3rem;
   margin: 2rem 0;
+  position: relative;
+  overflow: visible;
 
   @media (max-width: 980px) {
     flex-direction: column;
