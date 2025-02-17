@@ -1,7 +1,7 @@
 import Chart from "chart.js/auto";
 import { useEffect, useRef } from "react";
 import { fetchVisitorCountHistory } from "../../api";
-import { hasKey, setItem, getItem } from "../../utils/localStorage";
+import { getCachedData, setCachedData } from "../../utils/cache";
 
 const VISITOR_COUNT_KEY = "visitorCount";
 const msCacheExpiryTime = 86400000;
@@ -11,36 +11,12 @@ const VisitorChart = () => {
   const chartRef = useRef(null);
 
   useEffect(() => {
-    let result = [];
-
     const initializeChart = async () => {
-      if (hasKey(VISITOR_COUNT_KEY)) {
-        const { count, expires } = getItem(VISITOR_COUNT_KEY);
-        if (expires > Date.now()) {
-          result = count;
-        } else {
-          result = await fetchVisitorCountHistory();
-          if (result) {
-            result.pop();
-          }
-
-          setItem(VISITOR_COUNT_KEY, {
-            ...(getItem(VISITOR_COUNT_KEY) ?? null),
-            count: result,
-            expires: Date.now() + msCacheExpiryTime,
-          });
-        }
-      } else {
+      let result = getCachedData(VISITOR_COUNT_KEY);
+      if (!result) {
         result = await fetchVisitorCountHistory();
-        if (result) {
-          result.pop();
-        }
-
-        setItem(VISITOR_COUNT_KEY, {
-          ...(getItem(VISITOR_COUNT_KEY) ?? null),
-          count: result,
-          expires: Date.now() + msCacheExpiryTime,
-        });
+        if (result) result.pop();
+        setCachedData(VISITOR_COUNT_KEY, result, msCacheExpiryTime);
       }
 
       let labels = [];
