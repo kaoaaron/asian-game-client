@@ -9,6 +9,7 @@ import Globe from "./Globe";
 const AboutSection = styled.div`
   margin-bottom: 1rem;
   text-align: center;
+  z-index: 2;
 
   h2 {
     font-size: 3rem;
@@ -63,6 +64,7 @@ const VisitorCountSection = styled.div`
   margin: 2rem 0;
   position: relative;
   overflow: visible;
+  z-index: 2;
 
   @media (max-width: 980px) {
     flex-direction: column;
@@ -77,7 +79,7 @@ const VisitorCount = styled.div`
   padding: 1rem;
   border: 2px solid #ffb300;
   border-radius: 10px;
-  background-color: rgba(255, 179, 0, 0.1);
+  background-color: #1a1100;
 
   @media (max-width: 980px) {
     font-size: 2.5rem;
@@ -89,6 +91,11 @@ const VisitorCountLabel = styled.h3`
   color: #fff;
   margin: 0.5rem 0;
   text-align: center;
+`;
+
+const ContributorsWrapper = styled.div`
+  position: relative;
+  z-index: 2;
 `;
 
 const DonationSection = styled.div`
@@ -222,7 +229,9 @@ const TextSection = () => {
         </div>
       </VisitorCountSection>
       {!isMobile && <Globe />}
-      <Contributors />
+      <ContributorsWrapper>
+        <Contributors />
+      </ContributorsWrapper>
       <DonationSection>
         <h2>Support Our Project</h2>
         <p>

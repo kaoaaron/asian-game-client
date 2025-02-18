@@ -108,7 +108,7 @@ const Globe = () => {
     controls.enableRotate = true;
     controls.enableZoom = true;
     controls.rotateSpeed = 0.5;
-    controls.minDistance = 1.5;
+    controls.minDistance = 2;
     controls.maxDistance = 2;
     controlsRef.current = controls;
 
@@ -259,7 +259,7 @@ const Globe = () => {
       centroid.divideScalar(totalPoints);
       centroid.normalize();
 
-      const distance = 1.5;
+      const distance = 2;
       const targetPosition = centroid.multiplyScalar(distance);
 
       const lookAtMatrix = new THREE.Matrix4();
@@ -316,11 +316,11 @@ const Globe = () => {
         ref={mountRef}
         style={{
           top: 0,
-          width: "100%",
-          height: "100%",
+          transform: "translateY(-25%)",
+          width: "150%",
+          height: "150%",
           position: "absolute",
-          left: "-40vw",
-          zIndex: 1,
+          zIndex: 0,
         }}
       />
 
@@ -350,7 +350,7 @@ const Globe = () => {
               key={idx}
               variant="outlined"
               color="gold"
-              sx={{ width: "16rem", my: "5px" }}
+              sx={{ width: "16rem", my: "5px", backgroundColor: "#1a1100" }}
               onClick={() => handleCountryClick(idx)}
             >
               {topCountryVisibility[idx] ? val : `Top #${idx + 1}`}
