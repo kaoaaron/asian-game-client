@@ -321,6 +321,7 @@ const Globe = () => {
           height: "150%",
           position: "absolute",
           zIndex: 0,
+          pointerEvents: "none",
         }}
       />
 
