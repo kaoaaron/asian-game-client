@@ -358,7 +358,7 @@ const Globe = () => {
           ))}
         </div>
 
-        <div>
+        <div style={{ margin: "16px" }}>
           <VisitorChart />
         </div>
       </div>

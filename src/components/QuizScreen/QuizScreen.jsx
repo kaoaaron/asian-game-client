@@ -7,6 +7,7 @@ import {
   CardMedia,
   Box,
   LinearProgress,
+  Grid,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import "../../colors.css";
@@ -52,24 +53,46 @@ const ColoredButton = styled(Button)(({ answerStatus }) => ({
   },
 }));
 
+const StyledCard = styled(Card)(({ selected, correct, wrong }) => ({
+  cursor: "pointer",
+  transition: "transform 0.2s, border 0.2s",
+  border: "4px solid transparent",
+  height: "100%",
+  display: "flex",
+  "&:hover": {
+    transform: "scale(1.02)",
+  },
+  ...(selected && {
+    border: `4px solid ${correct ? "#4caf50" : "#f44336"}`,
+  }),
+  ...(correct &&
+    !selected && {
+      border: "4px solid #4caf50",
+    }),
+}));
+
 const QuizScreen = ({ onBack }) => {
   const people = useQuizStore((state) => state.people);
+  const filters = useQuizStore((state) => state.filters);
   const addIncorrectGuess = useQuizStore((state) => state.addIncorrectGuess);
-  const [currentPersonIndex, setCurrentPersonIndex] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
   const [isDisabled, setIsDisabled] = useState(false);
-  const totalQuestions = people.length;
 
-  const currentPerson = people[currentPersonIndex];
+  const isNewMode = filters.mode === "New";
+  console.log(isNewMode, "asd2");
+  const totalQuestions = people.length;
+  const currentQuestion = people[currentQuestionIndex];
 
   useEffect(() => {
-    if (currentPerson) {
-      generateOptions(currentPerson.ethnicity);
+    if (currentQuestion && !isNewMode) {
+      generateOptions(currentQuestion.ethnicity);
     }
-  }, [currentPerson]);
+  }, [currentQuestion, isNewMode]);
 
   const generateOptions = (correctEthnicity) => {
     const wrongOptions = ethnicities
@@ -83,30 +106,53 @@ const QuizScreen = ({ onBack }) => {
     setOptions(allOptions);
   };
 
-  const handleOptionClick = (option) => {
+  const handleClassicModeSelection = (option) => {
     if (isDisabled) return;
 
     setSelectedOption(option);
     setIsDisabled(true);
 
-    if (option === currentPerson.ethnicity) {
-      setIsCorrect(true);
+    const correct = option === currentQuestion.ethnicity;
+    setIsCorrect(correct);
+    if (correct) {
       setScore((prevScore) => prevScore + 1);
     } else {
-      setIsCorrect(false);
-      addIncorrectGuess(currentPerson._id);
+      addIncorrectGuess(currentQuestion._id);
     }
 
     setTimeout(() => {
       setIsDisabled(false);
-      handleNextPerson();
+      handleNextQuestion();
     }, 2000);
   };
 
-  const handleNextPerson = () => {
+  const handleNewModeSelection = (index) => {
+    if (isDisabled) return;
+
+    setSelectedImageIndex(index);
+    setIsDisabled(true);
+
+    const correct =
+      currentQuestion.people[index].ethnicity ===
+      currentQuestion.correctEthnicity;
+    setIsCorrect(correct);
+    if (correct) {
+      setScore((prevScore) => prevScore + 1);
+    } else {
+      addIncorrectGuess(currentQuestion.people[index]._id);
+    }
+
+    setTimeout(() => {
+      setIsDisabled(false);
+      handleNextQuestion();
+    }, 2000);
+  };
+
+  const handleNextQuestion = () => {
     setIsCorrect(null);
     setSelectedOption(null);
-    setCurrentPersonIndex((prevIndex) => prevIndex + 1);
+    setSelectedImageIndex(null);
+    setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
   };
 
   const scorePercentage =
@@ -121,7 +167,7 @@ const QuizScreen = ({ onBack }) => {
     });
   };
 
-  if (currentPersonIndex >= totalQuestions) {
+  if (currentQuestionIndex >= totalQuestions) {
     handleCompleteQuiz();
     return (
       <QuizComplete
@@ -133,6 +179,110 @@ const QuizScreen = ({ onBack }) => {
     );
   }
 
+  if (isNewMode) {
+    return (
+      <Stack
+        spacing={2}
+        alignItems="center"
+        sx={{
+          height: "100vh",
+          p: 2,
+          boxSizing: "border-box",
+          width: "100%",
+        }}
+      >
+        <LinearProgress
+          variant="determinate"
+          value={Math.floor((currentQuestionIndex / totalQuestions) * 100)}
+          color="gold"
+          sx={{ height: 8, borderRadius: 5, width: "100%" }}
+        />
+
+        <Typography variant="h5" color="white" align="center">
+          Select the {currentQuestion.correctEthnicity} person
+        </Typography>
+
+        <Box
+          sx={{
+            flex: 1,
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 1,
+            height: "calc(100vh)",
+            alignContent: "center",
+            maxWidth: "calc(100vh - 150px)",
+            margin: "0 auto",
+            aspectRatio: "1",
+            width: "100%",
+            justifyContent: "center",
+            justifyItems: "center",
+          }}
+        >
+          {currentQuestion.people.map((person, index) => (
+            <Box
+              key={person._id}
+              sx={{
+                position: "relative",
+                aspectRatio: "1",
+                width: "100%",
+                maxWidth: "calc((100vh - 150px) / 2 - 8px)",
+              }}
+            >
+              <StyledCard
+                onClick={() => handleNewModeSelection(index)}
+                selected={selectedImageIndex === index}
+                correct={
+                  isDisabled &&
+                  person.ethnicity === currentQuestion.correctEthnicity
+                }
+                wrong={selectedImageIndex === index && !isCorrect}
+              >
+                <CardMedia
+                  component="img"
+                  image={person.imageUrl}
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                    backgroundColor: "rgba(0, 0, 0, 0.1)",
+                  }}
+                />
+              </StyledCard>
+            </Box>
+          ))}
+        </Box>
+
+        {selectedImageIndex !== null && (
+          <Box
+            sx={{
+              bgcolor: "rgba(0, 0, 0, 0.8)",
+              p: 2,
+              borderRadius: 2,
+              position: "absolute",
+              bottom: 20,
+              left: "50%",
+              transform: "translateX(-50%)",
+              maxWidth: "90%",
+              width: "auto",
+            }}
+          >
+            <Typography color="white" variant="h6" align="center">
+              {currentQuestion.people[selectedImageIndex].nativeName ||
+                currentQuestion.people[selectedImageIndex].name}
+            </Typography>
+            {currentQuestion.people[selectedImageIndex].occupation && (
+              <Typography color="white" align="center">
+                Occupation:{" "}
+                {currentQuestion.people[selectedImageIndex].occupation}
+              </Typography>
+            )}
+          </Box>
+        )}
+      </Stack>
+    );
+  }
+
+  // Classic Mode
   return (
     <Stack
       spacing={2}
@@ -145,7 +295,7 @@ const QuizScreen = ({ onBack }) => {
     >
       <LinearProgress
         variant="determinate"
-        value={Math.floor((currentPersonIndex / totalQuestions) * 100)}
+        value={Math.floor((currentQuestionIndex / totalQuestions) * 100)}
         color="gold"
         style={{
           height: 8,
@@ -168,7 +318,7 @@ const QuizScreen = ({ onBack }) => {
           >
             <CardMedia
               component="img"
-              image={currentPerson.imageUrl}
+              image={currentQuestion.imageUrl}
               style={{
                 height: "100%",
                 width: "100%",
@@ -203,42 +353,42 @@ const QuizScreen = ({ onBack }) => {
             {selectedOption && (
               <>
                 <Typography variant="h4" color="text.primary">
-                  {currentPerson.nativeName || currentPerson.name}
+                  {currentQuestion.nativeName || currentQuestion.name}
                 </Typography>
-                {currentPerson.nativeName && (
+                {currentQuestion.nativeName && (
                   <Typography
                     variant="h6"
                     color="text.primary"
                     sx={{ marginTop: "8px" }}
                   >
-                    English Name: {currentPerson.name}
+                    English Name: {currentQuestion.name}
                   </Typography>
                 )}
-                {currentPerson.shortDescription && (
+                {currentQuestion.shortDescription && (
                   <Typography
                     variant="body2"
                     color="text.primary"
                     sx={{ marginTop: "8px" }}
                   >
-                    Description: {currentPerson.shortDescription}
+                    Description: {currentQuestion.shortDescription}
                   </Typography>
                 )}
-                {currentPerson.birthDate && (
+                {currentQuestion.birthDate && (
                   <Typography
                     variant="body2"
                     color="text.primary"
                     sx={{ marginTop: "8px" }}
                   >
-                    Age: {calculateAge(currentPerson.birthDate)}
+                    Age: {calculateAge(currentQuestion.birthDate)}
                   </Typography>
                 )}
-                {currentPerson.birthPlaceLabel && (
+                {currentQuestion.birthPlaceLabel && (
                   <Typography
                     variant="body2"
                     color="text.primary"
                     sx={{ marginTop: "8px" }}
                   >
-                    Birthplace: {currentPerson.birthPlaceLabel}
+                    Birthplace: {currentQuestion.birthPlaceLabel}
                   </Typography>
                 )}
                 <Typography
@@ -246,7 +396,7 @@ const QuizScreen = ({ onBack }) => {
                   color="text.primary"
                   sx={{ marginTop: "8px" }}
                 >
-                  Occupation: {currentPerson.occupation}
+                  Occupation: {currentQuestion.occupation}
                 </Typography>
               </>
             )}
@@ -271,11 +421,11 @@ const QuizScreen = ({ onBack }) => {
                     ? "correct"
                     : selectedOption === option && !isCorrect
                     ? "wrong"
-                    : selectedOption && option === currentPerson.ethnicity
+                    : selectedOption && option === currentQuestion.ethnicity
                     ? "correct"
                     : null
                 }
-                onClick={() => handleOptionClick(option)}
+                onClick={() => handleClassicModeSelection(option)}
                 style={{
                   fontSize: {
                     xs: "clamp(0.5rem, 1rem, 1.5rem)",

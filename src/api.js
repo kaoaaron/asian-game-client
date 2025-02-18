@@ -70,6 +70,25 @@ export const fetchPeopleData = async (filters) => {
   }
 };
 
+export const fetchPeopleGroupedData = async (filters) => {
+  const { numberOfPeople, gender, minAge, maxAge, occupationsList } = filters;
+  const genderFilter = gender === "both" ? "" : `&gender=${gender}`;
+  const query = `/people/grouped?limit=${numberOfPeople}${genderFilter}&minAge=${minAge}&maxAge=${maxAge}&occupations=${occupationsList.join(
+    ","
+  )}`;
+
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_ASIAN_API_URL}${query}`
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching people data:", error);
+    return [];
+  }
+};
+
 export const fetchLeaderboardData = async () => {
   const query = `/leaderboard`;
 

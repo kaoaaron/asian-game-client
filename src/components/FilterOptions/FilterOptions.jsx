@@ -2,9 +2,10 @@ import React, { useState, useRef } from "react";
 import ManIcon from "@mui/icons-material/Man";
 import WomanIcon from "@mui/icons-material/Woman";
 import WcIcon from "@mui/icons-material/Wc";
+import CircularProgress from "@mui/material/CircularProgress";
 import styled from "styled-components";
 import jyback from "../../assets/images/landing/jyback.png";
-import { fetchPeopleData } from "../../api";
+import { fetchPeopleData, fetchPeopleGroupedData } from "../../api";
 import {
   getSortedCategories,
   getOccupations,
@@ -104,12 +105,13 @@ const StyledTextField = styled(TextField)`
 `;
 
 const FilterOptions = () => {
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [localFilters, setLocalFilters] = useState({
-    numberOfPeople: 10,
+    numberOfPeople: "10",
     gender: "both",
     minAge: "0",
     maxAge: "200",
+    mode: "Classic",
   });
   const [ageError, setAgeError] = useState("");
   const [categoryName, setCategoryName] = React.useState([]);
@@ -128,8 +130,12 @@ const FilterOptions = () => {
     }
   };
 
-  const numberOptions = [10, 30, 50, 100, 150, 200];
+  const getNumberOptions = () => {
+    return localFilters.mode === "New" ? [10, 30] : [10, 30, 50, 100, 150, 200];
+  };
+
   const genderOptions = ["both", "male", "female"];
+  const modeOptions = ["Classic", "New"];
   const numberRef = useRef(null);
   const genderRef = useRef(null);
 
@@ -198,10 +204,25 @@ const FilterOptions = () => {
   };
 
   const handleFilterChange = (e) => {
-    setLocalFilters((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    const { name, value } = e.target;
+    if (name === "mode") {
+      setLocalFilters((prev) => {
+        const newFilters = { ...prev, [name]: value };
+        // Reset numberOfPeople to 10 if current value isn't valid for New mode
+        if (
+          value === "New" &&
+          ![10, 30].includes(Number(prev.numberOfPeople))
+        ) {
+          newFilters.numberOfPeople = "10";
+        }
+        return newFilters;
+      });
+    } else {
+      setLocalFilters((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleStartQuiz = async () => {
@@ -213,37 +234,52 @@ const FilterOptions = () => {
       return;
     }
 
-    setIsButtonDisabled(true);
-    if (!isButtonDisabled) {
-      setFilters({
-        ...localFilters,
-        minAge,
-        maxAge,
-      });
+    setIsLoading(true);
+
+    setFilters({
+      ...localFilters,
+      minAge,
+      maxAge,
+    });
+
+    try {
       let occupationsList = [];
       for (let category of categoryName) {
         occupationsList.push(...getOccupations(category));
       }
 
       occupationsList = [...new Set(occupationsList)];
-
       if (
         occupationsList.length > 0 ||
         minAge !== 0 ||
         maxAge !== 200 ||
-        localFilters.gender !== "both"
+        localFilters.gender !== "both" ||
+        localFilters.mode === "New"
       ) {
         setLeaderboardQualified(false);
       }
 
-      const data = await fetchPeopleData({
-        ...localFilters,
-        minAge,
-        maxAge,
-        occupationsList,
-      });
+      const data =
+        localFilters.mode === "New"
+          ? await fetchPeopleGroupedData({
+              ...localFilters,
+              minAge,
+              maxAge,
+              occupationsList,
+            })
+          : await fetchPeopleData({
+              ...localFilters,
+              minAge,
+              maxAge,
+              occupationsList,
+            });
+
       setPeople(data);
       setScreen(ScreenEnum.QUIZ);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -306,15 +342,19 @@ const FilterOptions = () => {
           tabIndex={0}
           ref={numberRef}
         >
-          <Typography variant="h6" sx={{ mb: 2, fontWeight: "500" }}>
-            Number of People
+          <Typography variant="h6" sx={{ mt: 2, mb: 2, fontWeight: "500" }}>
+            Number of Questions
           </Typography>
           <OptionContainer>
-            <RadioGroup row sx={{ flexWrap: "nowrap" }}>
-              {numberOptions.map((item) => (
+            <RadioGroup
+              row
+              sx={{ flexWrap: "nowrap" }}
+              value={localFilters.numberOfPeople}
+            >
+              {getNumberOptions().map((item) => (
                 <FormControlLabel
                   key={item}
-                  value={item}
+                  value={String(item)}
                   sx={{ margin: 0 }}
                   control={
                     <Radio
@@ -325,7 +365,7 @@ const FilterOptions = () => {
                   }
                   label={
                     <NumberButtonLabel
-                      checked={+localFilters.numberOfPeople === item}
+                      checked={localFilters.numberOfPeople === String(item)}
                       isMobile={isMobile}
                     >
                       {item}
@@ -339,6 +379,41 @@ const FilterOptions = () => {
         <Typography sx={{ textAlign: "center" }}>
           Using the options below will disqualify you from the leaderboard.
         </Typography>
+        <Box>
+          <Typography
+            variant="h6"
+            sx={{ mb: 2, fontWeight: "500", textAlign: "center" }}
+          >
+            Mode
+          </Typography>
+          <OptionContainer>
+            <RadioGroup
+              row
+              sx={{ flexWrap: "nowrap" }}
+              value={localFilters.mode}
+            >
+              {modeOptions.map((item) => (
+                <FormControlLabel
+                  key={item}
+                  value={item}
+                  sx={{ margin: 0 }}
+                  control={
+                    <Radio
+                      name="mode"
+                      sx={{ display: "none" }}
+                      onChange={handleFilterChange}
+                    />
+                  }
+                  label={
+                    <StyledButtonLabel checked={localFilters.mode === item}>
+                      {item}
+                    </StyledButtonLabel>
+                  }
+                />
+              ))}
+            </RadioGroup>
+          </OptionContainer>
+        </Box>
         <Box
           sx={{
             display: "flex",
@@ -599,13 +674,30 @@ const FilterOptions = () => {
             "&:hover": {
               backgroundColor: "#e6b800",
             },
+            "&:disabled": {
+              backgroundColor: "#ccac00",
+              color: "#666",
+            },
           }}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onClick={handleStartQuiz}
-          disabled={isButtonDisabled}
+          disabled={isLoading}
         >
-          Start Quiz
+          {isLoading ? (
+            <>
+              <CircularProgress
+                size={20}
+                sx={{
+                  color: "#666",
+                  marginRight: "8px",
+                }}
+              />
+              Loading...
+            </>
+          ) : (
+            "Start Quiz"
+          )}
         </Button>
       </Box>
     </Box>
