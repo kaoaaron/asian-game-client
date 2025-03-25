@@ -253,8 +253,7 @@ const FilterOptions = () => {
         occupationsList.length > 0 ||
         minAge !== 0 ||
         maxAge !== 200 ||
-        localFilters.gender !== "both" ||
-        localFilters.mode === "New"
+        localFilters.gender !== "both"
       ) {
         setLeaderboardQualified(false);
       }

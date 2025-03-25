@@ -84,7 +84,6 @@ const QuizScreen = ({ onBack }) => {
   const [isDisabled, setIsDisabled] = useState(false);
 
   const isNewMode = filters.mode === "New";
-  console.log(isNewMode, "asd2");
   const totalQuestions = people.length;
   const currentQuestion = people[currentQuestionIndex];
 
@@ -172,6 +171,7 @@ const QuizScreen = ({ onBack }) => {
     return (
       <QuizComplete
         score={score}
+        mode={isNewMode ? "new" : "classic"}
         totalQuestions={totalQuestions}
         scorePercentage={scorePercentage}
         onBack={onBack}

@@ -89,8 +89,8 @@ export const fetchPeopleGroupedData = async (filters) => {
   }
 };
 
-export const fetchLeaderboardData = async () => {
-  const query = `/leaderboard`;
+export const fetchLeaderboardData = async (type) => {
+  const query = `/leaderboard?type=${type}`;
 
   try {
     const response = await fetch(
@@ -104,8 +104,8 @@ export const fetchLeaderboardData = async () => {
   }
 };
 
-export const fetchLeaderboardAvailability = async ({ scored, total }) => {
-  const query = `/is-leader?scored=${scored}&total=${total}`;
+export const fetchLeaderboardAvailability = async ({ scored, total, type }) => {
+  const query = `/is-leader?scored=${scored}&total=${total}&type=${type}`;
 
   try {
     const response = await fetch(
