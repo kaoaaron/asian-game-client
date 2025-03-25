@@ -6,7 +6,13 @@ import LeaderboardFormModal from "./LeaderboardFormModal";
 import { useNavigate } from "react-router";
 import useQuizStore from "../../store";
 
-const QuizComplete = ({ score, totalQuestions, scorePercentage, onBack }) => {
+const QuizComplete = ({
+  score,
+  totalQuestions,
+  scorePercentage,
+  mode,
+  onBack,
+}) => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLBModalOpen, setIsLBModalOpen] = useState(false);
@@ -23,6 +29,7 @@ const QuizComplete = ({ score, totalQuestions, scorePercentage, onBack }) => {
       const res = await fetchLeaderboardAvailability({
         scored: score,
         total: totalQuestions,
+        type: mode,
       });
       if (res) {
         setIsLBModalOpen(true);
@@ -88,6 +95,7 @@ const QuizComplete = ({ score, totalQuestions, scorePercentage, onBack }) => {
         onClose={handleCloseLBModal}
         scored={score}
         total={totalQuestions}
+        type={mode}
       />
     </>
   );
