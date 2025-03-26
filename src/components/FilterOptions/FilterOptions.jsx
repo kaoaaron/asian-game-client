@@ -375,9 +375,7 @@ const FilterOptions = () => {
             </RadioGroup>
           </OptionContainer>
         </Box>
-        <Typography sx={{ textAlign: "center" }}>
-          Using the options below will disqualify you from the leaderboard.
-        </Typography>
+
         <Box>
           <Typography
             variant="h6"
@@ -413,6 +411,9 @@ const FilterOptions = () => {
             </RadioGroup>
           </OptionContainer>
         </Box>
+        <Typography sx={{ textAlign: "center" }}>
+          Using the options below will disqualify you from the leaderboard.
+        </Typography>
         <Box
           sx={{
             display: "flex",
