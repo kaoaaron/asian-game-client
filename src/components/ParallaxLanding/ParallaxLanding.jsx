@@ -22,6 +22,8 @@ import trophy from "../../assets/images/landing/trophy.png";
 import AnimatedTitle from "./AnimatedTitle";
 import TextSection from "./TextSection";
 import { useNavigate } from "react-router";
+import { useMediaQuery, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 const zoomIn = keyframes`
   from {
@@ -234,6 +236,40 @@ const ImageContainer = styled.div`
   }
 `;
 
+const UpdateOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  background: rgba(0,0,0,0.92);
+  color: #ffd700;
+  z-index: 9999;
+  padding: 7px 0 7px 0;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.2);
+  border-bottom: 1.5px solid #ffd700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @media (max-width: 900px) {
+    display: none;
+  }
+`;
+
+const CloseButton = styled(IconButton)`
+  position: absolute !important;
+  right: 12px;
+  top: 4px;
+  color: #ffd700 !important;
+  background: rgba(0,0,0,0.2) !important;
+  &:hover {
+    background: rgba(255,255,255,0.08) !important;
+  }
+`;
+
 const ParallaxLanding = ({ onZoomComplete }) => {
   const [hovered, setHovered] = useState(false);
   const [easterHovered, setEasterHovered] = useState(false);
@@ -248,6 +284,8 @@ const ParallaxLanding = ({ onZoomComplete }) => {
   const backtreeTimeout = useRef(null);
   const doorRef = useRef(null);
   const navigate = useNavigate();
+  const isDesktop = useMediaQuery("(min-width:900px)");
+  const [showUpdate, setShowUpdate] = useState(true);
 
   const handleBacktreeMouseDown = () => {
     backtreeTimeout.current = setTimeout(() => {
@@ -307,6 +345,17 @@ const ParallaxLanding = ({ onZoomComplete }) => {
 
   return (
     <>
+      {isDesktop && showUpdate && (
+        <UpdateOverlay>
+          <span>
+            <span style={{fontWeight: 600}}>Update ({new Date().toLocaleDateString()}): </span>
+            Leaderboard will be down temporarily. Timer system will be implemented to prevent cheating and previous scores will be wiped.
+          </span>
+          <CloseButton size="small" aria-label="close update" onClick={() => setShowUpdate(false)}>
+            <CloseIcon fontSize="small" />
+          </CloseButton>
+        </UpdateOverlay>
+      )}
       <ImageContainer
         zoom={zoomed}
         hovered={hovered}
