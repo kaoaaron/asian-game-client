@@ -14,6 +14,13 @@ const useQuizStore = create((set) => ({
   leaderboardQualified: true,
   setLeaderboardQualified: (qualified) =>
     set({ leaderboardQualified: qualified }),
+  timerDisabled: false,
+  setTimerDisabled: (disabled) => set({ timerDisabled: disabled }),
+  timerActive: false,
+  setTimerActive: (active) => set({ timerActive: active }),
+  timeRemaining: 12,
+  setTimeRemaining: (time) => set({ timeRemaining: time }),
+  resetTimer: () => set({ timeRemaining: 12, timerActive: false }),
 
   filters: {
     numberOfPeople: 30,
@@ -42,6 +49,8 @@ const useQuizStore = create((set) => ({
       screen: ScreenEnum.START,
       zoomFinished: false,
       incorrectGuesses: [],
+      timeRemaining: 12,
+      timerActive: false,
     })),
 }));
 

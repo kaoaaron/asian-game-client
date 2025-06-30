@@ -13,7 +13,7 @@ const contributorsData = [
     backgroundImage: aaronBackground,
     name: "Aaron Kao",
     description: "Driving Developer",
-    profileDescription: `Aaron is the lead developer of this app. He graduated with a degree in Mechanical Engineering but decided to follow his passion to become a Software Engineer. He has previously worked at Sony, getting credited on major films such as Angry Birds 2, and also spent 2 years doing development work on the TELUS customer-facing website. Currently, he is a Software Engineer at Alida, working on features for the core Surveys product.<br /><br />Outside of work, Aaron’s main hobbies include playing sports, such as badminton, pickleball, DDR, and basketball, as well as watching Anime and playing video games.`,
+    profileDescription: `Aaron is the lead developer of this app. He graduated with a degree in Mechanical Engineering but decided to follow his passion to become a Software Engineer. He has previously worked at Sony, getting credited on major films such as Angry Birds 2, spent 2 years doing development work on the TELUS customer-facing website, and working as is a Software Engineer at Alida. Currently, he is working as a Software Engineer at Autodesk as part of the Connected Delivery team.<br /><br />Outside of work, Aaron’s main hobbies include playing sports, such as badminton, pickleball, DDR, and basketball, as well as watching Anime and playing video games.`,
     ethnicity: "Chinese",
     linkedIn: "https://www.linkedin.com/in/aaron-kao",
   },
@@ -23,7 +23,7 @@ const contributorsData = [
     backgroundImage: jyBackground,
     name: "Jiyoung Lim",
     description: "Developer",
-    profileDescription: `Jiyoung graduated with a Software Engineering degree from Pusan National University. Currently, she is a Web Developer at a law firm working on websites for 6 startups. She is extremely active in the community, writing tech articles, working on various side projects, and acting as an executive for toastmasters.
+    profileDescription: `Jiyoung graduated with a Software Engineering degree from Pusan National University. She was previously a web developer at a law firm, and is currently a Software Engineer working on the core surveys team at Alida. She is extremely active in the community, writing tech articles, working on various side projects, and acting as an executive for toastmasters.
     
     Outside of work, Jiyoung’s main hobbies include playing sports, such as badminton, pickleball, DDR, and basketball, as well as reading Manga, and exploring new food.`,
     ethnicity: "Korean",

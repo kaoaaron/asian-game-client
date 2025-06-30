@@ -21,8 +21,14 @@ import useQuizStore from "../../store";
 import { useMediaQuery } from "@mui/material";
 
 const DiscoverPeopleModal = ({ open, onClose }) => {
-  const people = useQuizStore((state) => state.people);
+  const peopleRaw = useQuizStore((state) => state.people);
   const incorrectGuesses = useQuizStore((state) => state.incorrectGuesses);
+
+  // Flatten people if in New Mode (grouped)
+  let people = peopleRaw;
+  if (Array.isArray(peopleRaw) && peopleRaw.length > 0 && peopleRaw[0].people) {
+    people = peopleRaw.flatMap(q => q.people);
+  }
 
   const [expandedPerson, setExpandedPerson] = useState(null);
   const [filter, setFilter] = useState("all");

@@ -146,6 +146,8 @@ const FilterOptions = () => {
   const setLeaderboardQualified = useQuizStore(
     (state) => state.setLeaderboardQualified
   );
+  const timerDisabled = useQuizStore((state) => state.timerDisabled);
+  const setTimerDisabled = useQuizStore((state) => state.setTimerDisabled);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [isBackgroundVisible, setIsBackgroundVisible] = useState(false);
@@ -254,7 +256,8 @@ const FilterOptions = () => {
         minAge !== 0 ||
         maxAge !== 200 ||
         localFilters.gender !== "both" ||
-        localFilters.mode === "New"
+        localFilters.mode === "New" ||
+        timerDisabled
       ) {
         setLeaderboardQualified(false);
       }
@@ -302,6 +305,10 @@ const FilterOptions = () => {
         backgroundImage: isBackgroundVisible ? `url(${jyback})` : "none",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
+        maxWidth: "100vw",
+        overflow: "hidden",
+        padding: isMobile ? "10px" : "20px",
+        boxSizing: "border-box",
       }}
     >
       {!isMobile && (
@@ -316,6 +323,7 @@ const FilterOptions = () => {
             "&:hover": {
               backgroundColor: "#e6b800",
             },
+            zIndex: 10,
           }}
           onClick={handleBack}
         >
@@ -326,139 +334,119 @@ const FilterOptions = () => {
       {!isMobile && (
         <Typography
           variant="h4"
-          sx={{ mb: 4, fontWeight: "bold", letterSpacing: "1px" }}
+          sx={{ 
+            mb: 2, 
+            fontWeight: "bold", 
+            letterSpacing: "1px",
+            mt: 2,
+          }}
         >
           Select Quiz Options
         </Typography>
       )}
 
-      <Stack
-        spacing={isMobile ? 2 : 4}
-        alignItems="center"
-        sx={{ width: "100%" }}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          maxHeight: "calc(100vh - 120px)",
+          overflowY: "auto",
+          overflowX: "hidden",
+        }}
       >
-        <Box
-          sx={{ textAlign: "center", padding: "10px" }}
-          tabIndex={0}
-          ref={numberRef}
-        >
-          <Typography variant="h6" sx={{ mt: 2, mb: 2, fontWeight: "500" }}>
-            Number of Questions
-          </Typography>
-          <OptionContainer>
-            <RadioGroup
-              row
-              sx={{ flexWrap: "nowrap" }}
-              value={localFilters.numberOfPeople}
-            >
-              {getNumberOptions().map((item) => (
-                <FormControlLabel
-                  key={item}
-                  value={String(item)}
-                  sx={{ margin: 0 }}
-                  control={
-                    <Radio
-                      name="numberOfPeople"
-                      sx={{ display: "none" }}
-                      onChange={handleFilterChange}
-                    />
-                  }
-                  label={
-                    <NumberButtonLabel
-                      checked={localFilters.numberOfPeople === String(item)}
-                      isMobile={isMobile}
-                    >
-                      {item}
-                    </NumberButtonLabel>
-                  }
-                />
-              ))}
-            </RadioGroup>
-          </OptionContainer>
-        </Box>
-        <Typography sx={{ textAlign: "center" }}>
-          Using the options below will disqualify you from the leaderboard.
-        </Typography>
-        <Box>
-          <Typography
-            variant="h6"
-            sx={{ mb: 2, fontWeight: "500", textAlign: "center" }}
-          >
-            Mode
-          </Typography>
-          <OptionContainer>
-            <RadioGroup
-              row
-              sx={{ flexWrap: "nowrap" }}
-              value={localFilters.mode}
-            >
-              {modeOptions.map((item) => (
-                <FormControlLabel
-                  key={item}
-                  value={item}
-                  sx={{ margin: 0 }}
-                  control={
-                    <Radio
-                      name="mode"
-                      sx={{ display: "none" }}
-                      onChange={handleFilterChange}
-                    />
-                  }
-                  label={
-                    <StyledButtonLabel checked={localFilters.mode === item}>
-                      {item}
-                    </StyledButtonLabel>
-                  }
-                />
-              ))}
-            </RadioGroup>
-          </OptionContainer>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 2,
-            alignItems: "center",
-            justifyContent: "center",
+        <Stack
+          spacing={isMobile ? 1.5 : 3}
+          alignItems="center"
+          sx={{ 
+            width: "100%", 
+            maxWidth: isMobile ? "100%" : 800,
+            mx: "auto", 
+            px: isMobile ? 1 : 2,
+            pb: 2,
           }}
         >
           <Box
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "white",
-              border: "solid gold",
-              padding: "10px",
-              borderRadius: "16px",
+              textAlign: "center",
+              padding: isMobile ? "6px" : "10px",
+              maxWidth: "100%",
+              width: "100%",
+              mb: isMobile ? 1 : 2,
+              border: "2px solid #ffd700",
+              borderRadius: "12px",
+              background: "rgba(255, 215, 0, 0.08)",
+              boxShadow: isMobile ? "0 0 0 0" : "0 2px 8px 0 rgba(0,0,0,0.08)",
             }}
             tabIndex={0}
-            ref={genderRef}
+            ref={numberRef}
           >
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: "500" }}>
-              Gender
+            <Typography variant="h5" sx={{ mt: 2, mb: 2, fontWeight: "700", color: "#ffd700", fontSize: isMobile ? "20px" : "28px", letterSpacing: 1 }}>
+              Number of Questions
+            </Typography>
+            <OptionContainer sx={{ maxWidth: "100%" }}>
+              <RadioGroup
+                row
+                sx={{ flexWrap: "nowrap" }}
+                value={localFilters.numberOfPeople}
+              >
+                {getNumberOptions().map((item) => (
+                  <FormControlLabel
+                    key={item}
+                    value={String(item)}
+                    sx={{ margin: 0 }}
+                    control={
+                      <Radio
+                        name="numberOfPeople"
+                        sx={{ display: "none" }}
+                        onChange={handleFilterChange}
+                      />
+                    }
+                    label={
+                      <NumberButtonLabel
+                        checked={localFilters.numberOfPeople === String(item)}
+                        isMobile={isMobile}
+                      >
+                        {item}
+                      </NumberButtonLabel>
+                    }
+                  />
+                ))}
+              </RadioGroup>
+            </OptionContainer>
+          </Box>
+          <Typography sx={{ textAlign: "center", maxWidth: "100%" }}>
+            Using the options below will disqualify you from the leaderboard.
+          </Typography>
+          <Box>
+            <Typography
+              variant="h6"
+              sx={{ mb: 2, fontWeight: "500", textAlign: "center" }}
+            >
+              Mode
             </Typography>
             <OptionContainer>
-              <RadioGroup row sx={{ flexWrap: "nowrap", height: "40px" }}>
-                {genderOptions.map((item) => (
+              <RadioGroup
+                row
+                sx={{ flexWrap: "nowrap" }}
+                value={localFilters.mode}
+              >
+                {modeOptions.map((item) => (
                   <FormControlLabel
                     key={item}
                     value={item}
                     sx={{ margin: 0 }}
                     control={
                       <Radio
-                        name="gender"
+                        name="mode"
                         sx={{ display: "none" }}
                         onChange={handleFilterChange}
                       />
                     }
                     label={
-                      <StyledButtonLabel checked={localFilters.gender === item}>
-                        {item === "male" && <ManIcon />}
-                        {item === "female" && <WomanIcon />}
-                        {item === "both" && <WcIcon />}
+                      <StyledButtonLabel checked={localFilters.mode === item}>
+                        {item}
                       </StyledButtonLabel>
                     }
                   />
@@ -466,187 +454,279 @@ const FilterOptions = () => {
               </RadioGroup>
             </OptionContainer>
           </Box>
-
+          <Stack
+            direction="row"
+            spacing={0.5}
+            alignItems="center"
+            justifyContent="center"
+            sx={{
+              width: "100%",
+              mb: 1,
+              mt: 0.5,
+            }}
+          >
+            <Checkbox
+              checked={timerDisabled}
+              onChange={(e) => setTimerDisabled(e.target.checked)}
+              sx={{
+                color: "rgba(255, 255, 255, 0.7)",
+                "&.Mui-checked": {
+                  color: "#ffd700",
+                },
+                p: 0.25,
+              }}
+            />
+            <Typography
+              sx={{
+                color: "white",
+                fontSize: isMobile ? "13px" : "15px",
+                wordBreak: "break-word",
+                lineHeight: 1.2,
+              }}
+            >
+              Disable Timer
+            </Typography>
+          </Stack>
           <Box
             sx={{
               display: "flex",
-              flexDirection: "column",
+              flexWrap: "wrap",
+              gap: isMobile ? 1 : 2,
               alignItems: "center",
               justifyContent: "center",
-              color: "white",
-              border: "solid gold",
-              padding: "10px",
-              borderRadius: "16px",
+              width: "100%",
+              maxWidth: "100%",
             }}
           >
-            <Typography variant="h6" sx={{ fontWeight: "500" }}>
-              Age Range
-            </Typography>
             <Box
               sx={{
-                height: "20px",
                 display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
                 justifyContent: "center",
+                color: "white",
+                border: "solid gold",
+                padding: "10px",
+                borderRadius: "16px",
+              }}
+              tabIndex={0}
+              ref={genderRef}
+            >
+              <Typography variant="h6" sx={{ mb: 2, fontWeight: "500" }}>
+                Gender
+              </Typography>
+              <OptionContainer>
+                <RadioGroup row sx={{ flexWrap: "nowrap", height: "40px" }}>
+                  {genderOptions.map((item) => (
+                    <FormControlLabel
+                      key={item}
+                      value={item}
+                      sx={{ margin: 0 }}
+                      control={
+                        <Radio
+                          name="gender"
+                          sx={{ display: "none" }}
+                          onChange={handleFilterChange}
+                        />
+                      }
+                      label={
+                        <StyledButtonLabel checked={localFilters.gender === item}>
+                          {item === "male" && <ManIcon />}
+                          {item === "female" && <WomanIcon />}
+                          {item === "both" && <WcIcon />}
+                        </StyledButtonLabel>
+                      }
+                    />
+                  ))}
+                </RadioGroup>
+              </OptionContainer>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "white",
+                border: "solid gold",
+                padding: "10px",
+                borderRadius: "16px",
               }}
             >
-              {ageError && (
-                <Typography color="error" variant="caption">
-                  {ageError}
-                </Typography>
-              )}
+              <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                Age Range
+              </Typography>
+              <Box
+                sx={{
+                  height: "20px",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                {ageError && (
+                  <Typography color="error" variant="caption">
+                    {ageError}
+                  </Typography>
+                )}
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                  }}
+                >
+                  <StyledTextField
+                    type="number"
+                    name="minAge"
+                    value={localFilters.minAge}
+                    onChange={handleAgeChange}
+                    inputProps={{ min: 0, max: 200 }}
+                    size="small"
+                    error={!!ageError}
+                  />
+                  <Typography>to</Typography>
+                  <StyledTextField
+                    type="number"
+                    name="maxAge"
+                    value={localFilters.maxAge}
+                    onChange={handleAgeChange}
+                    inputProps={{ min: 0, max: 200 }}
+                    size="small"
+                    error={!!ageError}
+                  />
+                </Box>
+              </Box>
             </Box>
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                justifyContent: "center",
+                color: "white",
+                border: "solid gold",
+                padding: "10px",
+                borderRadius: "16px",
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 2,
-                }}
-              >
-                <StyledTextField
-                  type="number"
-                  name="minAge"
-                  value={localFilters.minAge}
-                  onChange={handleAgeChange}
-                  inputProps={{ min: 0, max: 200 }}
-                  size="small"
-                  error={!!ageError}
-                />
-                <Typography>to</Typography>
-                <StyledTextField
-                  type="number"
-                  name="maxAge"
-                  value={localFilters.maxAge}
-                  onChange={handleAgeChange}
-                  inputProps={{ min: 0, max: 200 }}
-                  size="small"
-                  error={!!ageError}
-                />
-              </Box>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "white",
-              border: "solid gold",
-              padding: "10px",
-              borderRadius: "16px",
-            }}
-          >
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: "500" }}>
-              Categories
-            </Typography>
-            <OptionContainer>
-              <Select
-                labelId="demo-multiple-checkbox-label"
-                id="demo-multiple-checkbox"
-                multiple
-                value={
-                  categoryName.length === 0 ? ["All Categories"] : categoryName
-                }
-                onChange={handleMultiSelectChange}
-                input={<OutlinedInput label="Tag" />}
-                renderValue={(selected) => {
-                  const displayValue = Array.isArray(selected)
-                    ? selected.join(", ")
-                    : "";
-                  return (
-                    <span
-                      style={{
-                        display: "inline-block",
-                        maxWidth: "calc(100% - 30px)",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {displayValue}
-                    </span>
-                  );
-                }}
-                sx={{
-                  width: "200px",
-                  height: "40px",
-                  color: "white",
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "rgba(255, 255, 255, 0.3)",
-                    borderRadius: "10px",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "rgba(255, 255, 255, 0.5)",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#ffd700",
-                  },
-                  "& .MuiSvgIcon-root": {
+              <Typography variant="h6" sx={{ mb: 2, fontWeight: "500" }}>
+                Categories
+              </Typography>
+              <OptionContainer>
+                <Select
+                  labelId="demo-multiple-checkbox-label"
+                  id="demo-multiple-checkbox"
+                  multiple
+                  value={
+                    categoryName.length === 0 ? ["All Categories"] : categoryName
+                  }
+                  onChange={handleMultiSelectChange}
+                  input={<OutlinedInput label="Tag" />}
+                  renderValue={(selected) => {
+                    const displayValue = Array.isArray(selected)
+                      ? selected.join(", ")
+                      : "";
+                    return (
+                      <span
+                        style={{
+                          display: "inline-block",
+                          maxWidth: "calc(100% - 30px)",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {displayValue}
+                      </span>
+                    );
+                  }}
+                  sx={{
+                    width: "200px",
+                    height: "40px",
                     color: "white",
-                  },
-                  "& .MuiOutlinedInput-root": {
-                    display: "flex",
-                    alignItems: "center",
-                    borderRadius: "4px",
-                  },
-                }}
-                MenuProps={{
-                  PaperProps: {
-                    sx: {
-                      backgroundColor: "rgba(0, 0, 0, 0.9)",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "rgba(255, 255, 255, 0.3)",
+                      borderRadius: "10px",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "rgba(255, 255, 255, 0.5)",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#ffd700",
+                    },
+                    "& .MuiSvgIcon-root": {
                       color: "white",
-                      "& .MuiMenuItem-root": {
-                        "&:hover": {
-                          backgroundColor: "rgba(255, 215, 0, 0.2)",
-                        },
-                        "&.Mui-selected": {
-                          backgroundColor: "rgba(255, 215, 0, 0.4)",
+                    },
+                    "& .MuiOutlinedInput-root": {
+                      display: "flex",
+                      alignItems: "center",
+                      borderRadius: "4px",
+                    },
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        backgroundColor: "rgba(0, 0, 0, 0.9)",
+                        color: "white",
+                        "& .MuiMenuItem-root": {
+                          "&:hover": {
+                            backgroundColor: "rgba(255, 215, 0, 0.2)",
+                          },
+                          "&.Mui-selected": {
+                            backgroundColor: "rgba(255, 215, 0, 0.4)",
+                          },
                         },
                       },
                     },
-                  },
-                }}
-              >
-                <MenuItem
-                  value=""
-                  disabled
-                  selected={categoryName.length === 0}
+                  }}
                 >
-                  All Categories
-                </MenuItem>
-                {categories.map((name) => (
-                  <MenuItem key={name} value={name}>
-                    <Checkbox
-                      checked={categoryName.includes(name)}
-                      sx={{
-                        color: "rgba(255, 255, 255, 0.7)",
-                        "&.Mui-checked": {
-                          color: "#ffd700",
-                        },
-                      }}
-                    />
-                    <ListItemText primary={name} />
+                  <MenuItem
+                    value=""
+                    disabled
+                    selected={categoryName.length === 0}
+                  >
+                    All Categories
                   </MenuItem>
-                ))}
-              </Select>
-            </OptionContainer>
+                  {categories.map((name) => (
+                    <MenuItem key={name} value={name}>
+                      <Checkbox
+                        checked={categoryName.includes(name)}
+                        sx={{
+                          color: "rgba(255, 255, 255, 0.7)",
+                          "&.Mui-checked": {
+                            color: "#ffd700",
+                          },
+                        }}
+                      />
+                      <ListItemText primary={name} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </OptionContainer>
+            </Box>
           </Box>
-        </Box>
-      </Stack>
+        </Stack>
+      </Box>
 
       <Box
         sx={{
           display: "flex",
-          gap: "16px",
+          gap: isMobile ? "8px" : "16px",
           alignItems: "center",
-          margin: "30px",
+          justifyContent: "center",
+          width: "100%",
+          padding: isMobile ? "10px" : "15px",
+          flexWrap: isMobile ? "wrap" : "nowrap",
+          mt: "auto",
         }}
       >
         {isMobile && (
@@ -658,6 +738,8 @@ const FilterOptions = () => {
               "&:hover": {
                 backgroundColor: "#e6b800",
               },
+              minWidth: "80px",
+              maxWidth: "120px",
             }}
             onClick={handleBack}
           >
@@ -667,8 +749,8 @@ const FilterOptions = () => {
         <Button
           variant="contained"
           sx={{
-            padding: isMobile ? "8px 8px" : "12px 24px",
-            fontSize: isMobile ? "12px" : "18px",
+            padding: isMobile ? "8px 12px" : "12px 20px",
+            fontSize: isMobile ? "12px" : "16px",
             backgroundColor: "#ffd700",
             color: "#000",
             "&:hover": {
@@ -678,6 +760,9 @@ const FilterOptions = () => {
               backgroundColor: "#ccac00",
               color: "#666",
             },
+            minWidth: isMobile ? "100px" : "120px",
+            maxWidth: isMobile ? "150px" : "200px",
+            boxSizing: "border-box",
           }}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}

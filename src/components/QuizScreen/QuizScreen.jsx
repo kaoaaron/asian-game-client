@@ -8,6 +8,7 @@ import {
   Box,
   LinearProgress,
   Grid,
+  CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import "../../colors.css";
@@ -75,6 +76,13 @@ const QuizScreen = ({ onBack }) => {
   const people = useQuizStore((state) => state.people);
   const filters = useQuizStore((state) => state.filters);
   const addIncorrectGuess = useQuizStore((state) => state.addIncorrectGuess);
+  const timerDisabled = useQuizStore((state) => state.timerDisabled);
+  const timerActive = useQuizStore((state) => state.timerActive);
+  const setTimerActive = useQuizStore((state) => state.setTimerActive);
+  const timeRemaining = useQuizStore((state) => state.timeRemaining);
+  const setTimeRemaining = useQuizStore((state) => state.setTimeRemaining);
+  const resetTimer = useQuizStore((state) => state.resetTimer);
+  
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -82,11 +90,64 @@ const QuizScreen = ({ onBack }) => {
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [hasAnswered, setHasAnswered] = useState(false);
+  const [timerExpired, setTimerExpired] = useState(false);
+  const [correctPersonIndex, setCorrectPersonIndex] = useState(null);
 
   const isNewMode = filters.mode === "New";
   console.log(isNewMode, "asd2");
   const totalQuestions = people.length;
   const currentQuestion = people[currentQuestionIndex];
+
+  // Timer effect
+  useEffect(() => {
+    if (timerDisabled || hasAnswered || currentQuestionIndex >= totalQuestions) return;
+
+    if (currentQuestion && !timerActive) {
+      setTimerActive(true);
+      setTimeRemaining(12);
+      setTimerExpired(false);
+      setCorrectPersonIndex(null);
+    }
+
+    if (timerActive && timeRemaining > 0 && !timerExpired) {
+      const timer = setTimeout(() => {
+        setTimeRemaining(timeRemaining - 1);
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    } else if (timerActive && timeRemaining === 0 && !timerExpired) {
+      // Time's up - show correct answer and move to next question
+      setTimerActive(false);
+      setHasAnswered(true);
+      setIsDisabled(true);
+      setTimerExpired(true);
+      setTimeRemaining(0); // Keep at 0
+
+      // Find the correct person index safely
+      let correctIndex = null;
+      if (currentQuestion && Array.isArray(currentQuestion.people)) {
+        correctIndex = currentQuestion.people.findIndex(
+          person => person.ethnicity === currentQuestion.correctEthnicity
+        );
+      }
+      setCorrectPersonIndex(correctIndex);
+
+      // Add incorrect guess since they didn't answer in time
+      if (isNewMode && currentQuestion && currentQuestion.people && currentQuestion.people[0]) {
+        addIncorrectGuess(currentQuestion.people[0]._id); // Add first person as incorrect
+      } else if (currentQuestion) {
+        addIncorrectGuess(currentQuestion._id);
+        // Set selectedOption to correct answer in Classic Mode
+        setSelectedOption(currentQuestion.ethnicity);
+      }
+
+      setTimeout(() => {
+        setIsDisabled(false);
+        handleNextQuestion();
+      }, 2000);
+    }
+  }, [timerActive, timeRemaining, currentQuestion, timerDisabled, hasAnswered, isNewMode, setTimerActive, setTimeRemaining, addIncorrectGuess, timerExpired, currentQuestionIndex, totalQuestions]);
 
   useEffect(() => {
     if (currentQuestion && !isNewMode) {
@@ -107,10 +168,12 @@ const QuizScreen = ({ onBack }) => {
   };
 
   const handleClassicModeSelection = (option) => {
-    if (isDisabled) return;
+    if (isDisabled || hasAnswered) return;
 
     setSelectedOption(option);
+    setHasAnswered(true);
     setIsDisabled(true);
+    setTimerActive(false);
 
     const correct = option === currentQuestion.ethnicity;
     setIsCorrect(correct);
@@ -127,10 +190,12 @@ const QuizScreen = ({ onBack }) => {
   };
 
   const handleNewModeSelection = (index) => {
-    if (isDisabled) return;
+    if (isDisabled || hasAnswered) return;
 
     setSelectedImageIndex(index);
+    setHasAnswered(true);
     setIsDisabled(true);
+    setTimerActive(false);
 
     const correct =
       currentQuestion.people[index].ethnicity ===
@@ -138,8 +203,14 @@ const QuizScreen = ({ onBack }) => {
     setIsCorrect(correct);
     if (correct) {
       setScore((prevScore) => prevScore + 1);
+      setCorrectPersonIndex(index);
     } else {
       addIncorrectGuess(currentQuestion.people[index]._id);
+      // Set correctPersonIndex to the correct person
+      const correctIndex = currentQuestion.people.findIndex(
+        person => person.ethnicity === currentQuestion.correctEthnicity
+      );
+      setCorrectPersonIndex(correctIndex);
     }
 
     setTimeout(() => {
@@ -152,7 +223,11 @@ const QuizScreen = ({ onBack }) => {
     setIsCorrect(null);
     setSelectedOption(null);
     setSelectedImageIndex(null);
+    setHasAnswered(false);
+    setTimerExpired(false);
+    setCorrectPersonIndex(null);
     setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+    resetTimer();
   };
 
   const scorePercentage =
@@ -179,6 +254,91 @@ const QuizScreen = ({ onBack }) => {
     );
   }
 
+  // Timer display component
+  const TimerDisplay = () => {
+    if (timerDisabled) return null;
+    
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          top: 48,
+          right: 20,
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          padding: "8px 12px",
+          borderRadius: "20px",
+          zIndex: 10,
+        }}
+      >
+        <CircularProgress
+          variant="determinate"
+          value={(timeRemaining / 12) * 100}
+          size={24}
+          sx={{
+            color: timeRemaining <= 3 ? "#f44336" : timeRemaining <= 6 ? "#ff9800" : "#4caf50",
+          }}
+        />
+        <Typography
+          variant="h6"
+          sx={{
+            color: "white",
+            fontWeight: "bold",
+            minWidth: "20px",
+            textAlign: "center",
+          }}
+        >
+          {timeRemaining}
+        </Typography>
+      </Box>
+    );
+  };
+
+  // Timer display for Classic Mode (positioned on white box)
+  const ClassicTimerDisplay = () => {
+    if (timerDisabled) return null;
+    
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          top: 10,
+          right: 10,
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          padding: "6px 10px",
+          borderRadius: "16px",
+          zIndex: 10,
+        }}
+      >
+        <CircularProgress
+          variant="determinate"
+          value={(timeRemaining / 12) * 100}
+          size={20}
+          sx={{
+            color: timeRemaining <= 3 ? "#f44336" : timeRemaining <= 6 ? "#ff9800" : "#4caf50",
+          }}
+        />
+        <Typography
+          variant="body1"
+          sx={{
+            color: "white",
+            fontWeight: "bold",
+            minWidth: "16px",
+            textAlign: "center",
+            fontSize: "14px",
+          }}
+        >
+          {timeRemaining}
+        </Typography>
+      </Box>
+    );
+  };
+
   if (isNewMode) {
     return (
       <Stack
@@ -189,8 +349,10 @@ const QuizScreen = ({ onBack }) => {
           p: 2,
           boxSizing: "border-box",
           width: "100%",
+          position: "relative",
         }}
       >
+        <TimerDisplay />
         <LinearProgress
           variant="determinate"
           value={Math.floor((currentQuestionIndex / totalQuestions) * 100)}
@@ -232,7 +394,7 @@ const QuizScreen = ({ onBack }) => {
                 onClick={() => handleNewModeSelection(index)}
                 selected={selectedImageIndex === index}
                 correct={
-                  isDisabled &&
+                  (isDisabled || timerExpired) &&
                   person.ethnicity === currentQuestion.correctEthnicity
                 }
                 wrong={selectedImageIndex === index && !isCorrect}
@@ -252,7 +414,8 @@ const QuizScreen = ({ onBack }) => {
           ))}
         </Box>
 
-        {selectedImageIndex !== null && (
+        {/* Always show the info popup if timerExpired and correctPersonIndex is set */}
+        {(timerExpired && correctPersonIndex !== null) && (
           <Box
             sx={{
               bgcolor: "rgba(0, 0, 0, 0.8)",
@@ -264,18 +427,102 @@ const QuizScreen = ({ onBack }) => {
               transform: "translateX(-50%)",
               maxWidth: "90%",
               width: "auto",
+              zIndex: 20,
             }}
           >
-            <Typography color="white" variant="h6" align="center">
-              {currentQuestion.people[selectedImageIndex].nativeName ||
-                currentQuestion.people[selectedImageIndex].name}
-            </Typography>
-            {currentQuestion.people[selectedImageIndex].occupation && (
-              <Typography color="white" align="center">
-                Occupation:{" "}
-                {currentQuestion.people[selectedImageIndex].occupation}
-              </Typography>
-            )}
+            {(() => {
+              const idx = correctPersonIndex;
+              if (idx === null || !currentQuestion.people[idx]) return null;
+              const person = currentQuestion.people[idx];
+              return (
+                <>
+                  <Typography color="white" variant="h6" align="center">
+                    {person.nativeName || person.name}
+                  </Typography>
+                  {person.nativeName && (
+                    <Typography color="white" align="center">
+                      English Name: {person.name}
+                    </Typography>
+                  )}
+                  {person.shortDescription && (
+                    <Typography color="white" align="center">
+                      Description: {person.shortDescription}
+                    </Typography>
+                  )}
+                  {person.birthDate && (
+                    <Typography color="white" align="center">
+                      Age: {calculateAge(person.birthDate)}
+                    </Typography>
+                  )}
+                  {person.birthPlaceLabel && (
+                    <Typography color="white" align="center">
+                      Birthplace: {person.birthPlaceLabel}
+                    </Typography>
+                  )}
+                  {person.occupation && (
+                    <Typography color="white" align="center">
+                      Occupation: {person.occupation}
+                    </Typography>
+                  )}
+                </>
+              );
+            })()}
+          </Box>
+        )}
+
+        {/* Show the info popup for user selection (correct or incorrect) if not timer expired */}
+        {(!timerExpired && selectedImageIndex !== null) && (
+          <Box
+            sx={{
+              bgcolor: "rgba(0, 0, 0, 0.8)",
+              p: 2,
+              borderRadius: 2,
+              position: "absolute",
+              bottom: 20,
+              left: "50%",
+              transform: "translateX(-50%)",
+              maxWidth: "90%",
+              width: "auto",
+              zIndex: 20,
+            }}
+          >
+            {(() => {
+              const idx = selectedImageIndex;
+              if (idx === null || !currentQuestion.people[idx]) return null;
+              const person = currentQuestion.people[idx];
+              return (
+                <>
+                  <Typography color="white" variant="h6" align="center">
+                    {person.nativeName || person.name}
+                  </Typography>
+                  {person.nativeName && (
+                    <Typography color="white" align="center">
+                      English Name: {person.name}
+                    </Typography>
+                  )}
+                  {person.shortDescription && (
+                    <Typography color="white" align="center">
+                      Description: {person.shortDescription}
+                    </Typography>
+                  )}
+                  {person.birthDate && (
+                    <Typography color="white" align="center">
+                      Age: {calculateAge(person.birthDate)}
+                    </Typography>
+                  )}
+                  {person.birthPlaceLabel && (
+                    <Typography color="white" align="center">
+                      Birthplace: {person.birthPlaceLabel}
+                    </Typography>
+                  )}
+                  {person.occupation && (
+                    <Typography color="white" align="center">
+                      Occupation: {person.occupation}
+                    </Typography>
+                  )}
+                </>
+              );
+            })()}
           </Box>
         )}
       </Stack>
@@ -291,6 +538,7 @@ const QuizScreen = ({ onBack }) => {
         width: "100%",
         height: "100vh",
         overflow: "hidden",
+        position: "relative",
       }}
     >
       <LinearProgress
@@ -348,9 +596,11 @@ const QuizScreen = ({ onBack }) => {
               padding: 2,
               borderRadius: 2,
               boxShadow: 1,
+              position: "relative",
             }}
           >
-            {selectedOption && (
+            <ClassicTimerDisplay />
+            {(selectedOption || timerExpired) && (
               <>
                 <Typography variant="h4" color="text.primary">
                   {currentQuestion.nativeName || currentQuestion.name}
@@ -422,6 +672,8 @@ const QuizScreen = ({ onBack }) => {
                     : selectedOption === option && !isCorrect
                     ? "wrong"
                     : selectedOption && option === currentQuestion.ethnicity
+                    ? "correct"
+                    : timerExpired && option === currentQuestion.ethnicity
                     ? "correct"
                     : null
                 }
