@@ -197,20 +197,20 @@ const QuizScreen = ({ onBack }) => {
     setIsDisabled(true);
     setTimerActive(false);
 
+    // Always set correctPersonIndex to the correct person
+    const correctIndex = currentQuestion.people.findIndex(
+      person => person.ethnicity === currentQuestion.correctEthnicity
+    );
+    setCorrectPersonIndex(correctIndex);
+
     const correct =
       currentQuestion.people[index].ethnicity ===
       currentQuestion.correctEthnicity;
     setIsCorrect(correct);
     if (correct) {
       setScore((prevScore) => prevScore + 1);
-      setCorrectPersonIndex(index);
     } else {
       addIncorrectGuess(currentQuestion.people[index]._id);
-      // Set correctPersonIndex to the correct person
-      const correctIndex = currentQuestion.people.findIndex(
-        person => person.ethnicity === currentQuestion.correctEthnicity
-      );
-      setCorrectPersonIndex(correctIndex);
     }
 
     setTimeout(() => {
@@ -414,8 +414,8 @@ const QuizScreen = ({ onBack }) => {
           ))}
         </Box>
 
-        {/* Always show the info popup if timerExpired and correctPersonIndex is set */}
-        {(timerExpired && correctPersonIndex !== null) && (
+        {/* Always show the info popup if timerExpired and correctPersonIndex is set, or if user has selected */}
+        {((timerExpired && correctPersonIndex !== null) || (selectedImageIndex !== null && correctPersonIndex !== null)) && (
           <Box
             sx={{
               bgcolor: "rgba(0, 0, 0, 0.8)",
@@ -432,62 +432,6 @@ const QuizScreen = ({ onBack }) => {
           >
             {(() => {
               const idx = correctPersonIndex;
-              if (idx === null || !currentQuestion.people[idx]) return null;
-              const person = currentQuestion.people[idx];
-              return (
-                <>
-                  <Typography color="white" variant="h6" align="center">
-                    {person.nativeName || person.name}
-                  </Typography>
-                  {person.nativeName && (
-                    <Typography color="white" align="center">
-                      English Name: {person.name}
-                    </Typography>
-                  )}
-                  {person.shortDescription && (
-                    <Typography color="white" align="center">
-                      Description: {person.shortDescription}
-                    </Typography>
-                  )}
-                  {person.birthDate && (
-                    <Typography color="white" align="center">
-                      Age: {calculateAge(person.birthDate)}
-                    </Typography>
-                  )}
-                  {person.birthPlaceLabel && (
-                    <Typography color="white" align="center">
-                      Birthplace: {person.birthPlaceLabel}
-                    </Typography>
-                  )}
-                  {person.occupation && (
-                    <Typography color="white" align="center">
-                      Occupation: {person.occupation}
-                    </Typography>
-                  )}
-                </>
-              );
-            })()}
-          </Box>
-        )}
-
-        {/* Show the info popup for user selection (correct or incorrect) if not timer expired */}
-        {(!timerExpired && selectedImageIndex !== null) && (
-          <Box
-            sx={{
-              bgcolor: "rgba(0, 0, 0, 0.8)",
-              p: 2,
-              borderRadius: 2,
-              position: "absolute",
-              bottom: 20,
-              left: "50%",
-              transform: "translateX(-50%)",
-              maxWidth: "90%",
-              width: "auto",
-              zIndex: 20,
-            }}
-          >
-            {(() => {
-              const idx = selectedImageIndex;
               if (idx === null || !currentQuestion.people[idx]) return null;
               const person = currentQuestion.people[idx];
               return (
