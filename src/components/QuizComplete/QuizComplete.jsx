@@ -17,12 +17,16 @@ const QuizComplete = ({ score, totalQuestions, scorePercentage, onBack }) => {
   const leaderboardQualified = useQuizStore(
     (state) => state.leaderboardQualified
   );
+  const filters = useQuizStore((state) => state.filters);
 
   useEffect(() => {
     async function fetchData() {
+      const type = filters.mode === "New" ? "new" : "classic";
+      
       const res = await fetchLeaderboardAvailability({
         scored: score,
         total: totalQuestions,
+        type: type,
       });
       if (res) {
         setIsLBModalOpen(true);
@@ -88,6 +92,7 @@ const QuizComplete = ({ score, totalQuestions, scorePercentage, onBack }) => {
         onClose={handleCloseLBModal}
         scored={score}
         total={totalQuestions}
+        type={filters.mode === "New" ? "new" : "classic"}
       />
     </>
   );

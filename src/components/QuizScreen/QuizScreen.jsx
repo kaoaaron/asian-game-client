@@ -95,7 +95,6 @@ const QuizScreen = ({ onBack }) => {
   const [correctPersonIndex, setCorrectPersonIndex] = useState(null);
 
   const isNewMode = filters.mode === "New";
-  console.log(isNewMode, "asd2");
   const totalQuestions = people.length;
   const currentQuestion = people[currentQuestionIndex];
 

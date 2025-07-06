@@ -3,7 +3,7 @@ import { Box, TextField, Button, Typography } from "@mui/material";
 import CustomModal from "../CustomModal/CustomModal";
 import { saveLeaderboardData } from "../../api";
 
-const LeaderboardFormModal = ({ open, onClose, scored, total }) => {
+const LeaderboardFormModal = ({ open, onClose, scored, total, type = "classic" }) => {
   const [name, setName] = useState("");
   const [errMsg, setErrMsg] = useState("");
 
@@ -12,6 +12,7 @@ const LeaderboardFormModal = ({ open, onClose, scored, total }) => {
       name,
       scored,
       total,
+      type,
     });
     if (res.result) {
       onClose();

@@ -256,7 +256,6 @@ const FilterOptions = () => {
         minAge !== 0 ||
         maxAge !== 200 ||
         localFilters.gender !== "both" ||
-        localFilters.mode === "New" ||
         timerDisabled
       ) {
         setLeaderboardQualified(false);
