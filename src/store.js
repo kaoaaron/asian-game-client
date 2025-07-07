@@ -9,6 +9,10 @@ const ScreenEnum = {
 const useQuizStore = create((set) => ({
   screen: ScreenEnum.START,
   setScreen: (newScreen) => set({ screen: newScreen }),
+  previousScreen: null,
+  setPreviousScreen: (screen) => set({ previousScreen: screen }),
+  quizResults: null,
+  setQuizResults: (results) => set({ quizResults: results }),
   zoomFinished: false,
   setZoomFinished: (finished) => set({ zoomFinished: finished }),
   leaderboardQualified: true,
@@ -51,6 +55,8 @@ const useQuizStore = create((set) => ({
       incorrectGuesses: [],
       timeRemaining: 12,
       timerActive: false,
+      previousScreen: null,
+      quizResults: null,
     })),
 }));
 

@@ -82,6 +82,8 @@ const QuizScreen = ({ onBack }) => {
   const timeRemaining = useQuizStore((state) => state.timeRemaining);
   const setTimeRemaining = useQuizStore((state) => state.setTimeRemaining);
   const resetTimer = useQuizStore((state) => state.resetTimer);
+  const quizResults = useQuizStore((state) => state.quizResults);
+  const setQuizResults = useQuizStore((state) => state.setQuizResults);
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [options, setOptions] = useState([]);
@@ -97,6 +99,81 @@ const QuizScreen = ({ onBack }) => {
   const isNewMode = filters.mode === "New";
   const totalQuestions = people.length;
   const currentQuestion = people[currentQuestionIndex];
+
+  const generateOptions = (correctEthnicity) => {
+    const wrongOptions = ethnicities
+      .filter((ethnicity) => ethnicity !== correctEthnicity)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
+
+    const allOptions = [...wrongOptions, correctEthnicity].sort(
+      () => Math.random() - 0.5
+    );
+    setOptions(allOptions);
+  };
+
+  const handleNextQuestion = () => {
+    setIsCorrect(null);
+    setSelectedOption(null);
+    setSelectedImageIndex(null);
+    setHasAnswered(false);
+    setTimerExpired(false);
+    setCorrectPersonIndex(null);
+    setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+    resetTimer();
+  };
+
+  const handleClassicModeSelection = (option) => {
+    if (isDisabled || hasAnswered) return;
+
+    setSelectedOption(option);
+    setHasAnswered(true);
+    setIsDisabled(true);
+    setTimerActive(false);
+
+    const correct = option === currentQuestion.ethnicity;
+    setIsCorrect(correct);
+    if (correct) {
+      setScore((prevScore) => prevScore + 1);
+    } else {
+      addIncorrectGuess(currentQuestion._id);
+    }
+
+    setTimeout(() => {
+      setIsDisabled(false);
+      handleNextQuestion();
+    }, 2000);
+  };
+
+  const handleNewModeSelection = (index) => {
+    if (isDisabled || hasAnswered) return;
+
+    setSelectedImageIndex(index);
+    setHasAnswered(true);
+    setIsDisabled(true);
+    setTimerActive(false);
+
+    // Always set correctPersonIndex to the correct person
+    const correctIndex = currentQuestion.people.findIndex(
+      person => person.ethnicity === currentQuestion.correctEthnicity
+    );
+    setCorrectPersonIndex(correctIndex);
+
+    const correct =
+      currentQuestion.people[index].ethnicity ===
+      currentQuestion.correctEthnicity;
+    setIsCorrect(correct);
+    if (correct) {
+      setScore((prevScore) => prevScore + 1);
+    } else {
+      addIncorrectGuess(currentQuestion.people[index]._id);
+    }
+
+    setTimeout(() => {
+      setIsDisabled(false);
+      handleNextQuestion();
+    }, 2000);
+  };
 
   // Timer effect
   useEffect(() => {
@@ -154,80 +231,20 @@ const QuizScreen = ({ onBack }) => {
     }
   }, [currentQuestion, isNewMode]);
 
-  const generateOptions = (correctEthnicity) => {
-    const wrongOptions = ethnicities
-      .filter((ethnicity) => ethnicity !== correctEthnicity)
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3);
-
-    const allOptions = [...wrongOptions, correctEthnicity].sort(
-      () => Math.random() - 0.5
+  // If we have stored quiz results, show the QuizComplete component
+  if (quizResults) {
+    return (
+      <QuizComplete
+        score={quizResults.score}
+        totalQuestions={quizResults.totalQuestions}
+        scorePercentage={quizResults.scorePercentage}
+        onBack={() => {
+          setQuizResults(null); // Clear the results
+          onBack(); // Go back to start
+        }}
+      />
     );
-    setOptions(allOptions);
-  };
-
-  const handleClassicModeSelection = (option) => {
-    if (isDisabled || hasAnswered) return;
-
-    setSelectedOption(option);
-    setHasAnswered(true);
-    setIsDisabled(true);
-    setTimerActive(false);
-
-    const correct = option === currentQuestion.ethnicity;
-    setIsCorrect(correct);
-    if (correct) {
-      setScore((prevScore) => prevScore + 1);
-    } else {
-      addIncorrectGuess(currentQuestion._id);
-    }
-
-    setTimeout(() => {
-      setIsDisabled(false);
-      handleNextQuestion();
-    }, 2000);
-  };
-
-  const handleNewModeSelection = (index) => {
-    if (isDisabled || hasAnswered) return;
-
-    setSelectedImageIndex(index);
-    setHasAnswered(true);
-    setIsDisabled(true);
-    setTimerActive(false);
-
-    // Always set correctPersonIndex to the correct person
-    const correctIndex = currentQuestion.people.findIndex(
-      person => person.ethnicity === currentQuestion.correctEthnicity
-    );
-    setCorrectPersonIndex(correctIndex);
-
-    const correct =
-      currentQuestion.people[index].ethnicity ===
-      currentQuestion.correctEthnicity;
-    setIsCorrect(correct);
-    if (correct) {
-      setScore((prevScore) => prevScore + 1);
-    } else {
-      addIncorrectGuess(currentQuestion.people[index]._id);
-    }
-
-    setTimeout(() => {
-      setIsDisabled(false);
-      handleNextQuestion();
-    }, 2000);
-  };
-
-  const handleNextQuestion = () => {
-    setIsCorrect(null);
-    setSelectedOption(null);
-    setSelectedImageIndex(null);
-    setHasAnswered(false);
-    setTimerExpired(false);
-    setCorrectPersonIndex(null);
-    setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-    resetTimer();
-  };
+  }
 
   const scorePercentage =
     totalQuestions > 0 ? ((score / totalQuestions) * 100).toFixed(2) : 0;

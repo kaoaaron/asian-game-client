@@ -25,6 +25,9 @@ const Leaderboard = () => {
   const navigate = useNavigate();
   const setScreen = useQuizStore((state) => state.setScreen);
   const setZoomFinished = useQuizStore((state) => state.setZoomFinished);
+  const previousScreen = useQuizStore((state) => state.previousScreen);
+  const setPreviousScreen = useQuizStore((state) => state.setPreviousScreen);
+  const quizResults = useQuizStore((state) => state.quizResults);
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState(10);
   const [filteredData, setFilteredData] = useState();
@@ -33,6 +36,20 @@ const Leaderboard = () => {
   // Get available options based on mode
   const getAvailableOptions = () => {
     return leaderboardType === "new" ? [10, 30] : [10, 30, 50, 100, 150, 200];
+  };
+
+  const handleBackButton = () => {
+    if (previousScreen === "quiz-complete" && quizResults) {
+      // If we came from the end game screen and have results, go back to it
+      setPreviousScreen(null); // Clear the previous screen
+      setScreen(ScreenEnum.QUIZ); // Set screen back to quiz (which will show QuizComplete)
+      navigate("/"); // Navigate to root which will render the quiz screen
+    } else {
+      // Default behavior - go to start screen
+      setZoomFinished(false);
+      setScreen(ScreenEnum.START);
+      navigate("/");
+    }
   };
 
   useEffect(() => {
@@ -79,11 +96,7 @@ const Leaderboard = () => {
       <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 3 }}>
         <Button
           variant="contained"
-          onClick={() => {
-            setZoomFinished(false);
-            setScreen(ScreenEnum.START);
-            navigate("/");
-          }}
+          onClick={handleBackButton}
           sx={{ 
             backgroundColor: "#ffd700",
             color: "#333",
@@ -98,7 +111,7 @@ const Leaderboard = () => {
             }
           }}
         >
-          ← Back to Start Game
+          {previousScreen === "quiz-complete" ? "← Back to Results" : "← Back to Start Game"}
         </Button>
       </Box>
 
