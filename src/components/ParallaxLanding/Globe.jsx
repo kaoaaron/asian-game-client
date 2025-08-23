@@ -4,7 +4,11 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Button } from "@mui/material";
 import { getCountryName } from "../../utils/countryCode";
 import { fetchTopCountryCodes } from "../../api";
+import { getCachedData, setCachedData } from "../../utils/cache";
 import VisitorChart from "./VisitorChart";
+
+const TOP_COUNTRIES_KEY = "topCountryData";
+const msCacheExpiryTime = 86400000;
 
 const Globe = () => {
   const mountRef = useRef(null);
@@ -188,8 +192,13 @@ const Globe = () => {
 
   useEffect(() => {
     const setTopPlayedCountries = async () => {
-      const data = await fetchTopCountryCodes(5);
-      setTopCountryNames(data.map((x) => getCountryName(x.countryCode)));
+      let result = getCachedData(TOP_COUNTRIES_KEY);
+      if (!result) {
+        result = await fetchTopCountryCodes(5);
+        setCachedData(TOP_COUNTRIES_KEY, result, msCacheExpiryTime);
+      }
+
+      setTopCountryNames(result.map((x) => getCountryName(x.countryCode)));
     };
 
     setTopPlayedCountries();

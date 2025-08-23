@@ -3,7 +3,7 @@ import { useMediaQuery } from "@mui/material";
 import styled from "styled-components";
 import { fetchGamesPlayedCount, fetchVisitorCount } from "../../api";
 import Contributors from "../Contributors/Contributors";
-import { hasKey, setItem, getItem } from "../../utils/localStorage";
+import { getCachedData, setCachedData } from "../../utils/cache";
 import Globe from "./Globe";
 
 const AboutSection = styled.div`
@@ -154,47 +154,23 @@ const TextSection = () => {
   const isMobile = useMediaQuery("(max-width:980px)");
 
   useEffect(() => {
-    const getVisitorCount = async () => {
-      const count = await fetchVisitorCount();
-      setVisitorCount(count);
-      setItem(VISITORSKEY, {
-        ...(getItem(VISITORSKEY) ?? null),
-        visitorCount: count,
-        expires: Date.now() + msCacheExpiryTime,
-      });
+    const initializeData = async () => {
+      let playedResult = getCachedData(PLAYEDGAMESKEY);
+      if (!playedResult) {
+        playedResult = await fetchGamesPlayedCount();
+        setCachedData(PLAYEDGAMESKEY, playedResult, msCacheExpiryTime);
+      }
+      setGamesPlayedCount(playedResult);
+
+      let visitorResult = getCachedData(VISITORSKEY);
+      if (!visitorResult) {
+        visitorResult = await fetchVisitorCount();
+        setCachedData(VISITORSKEY, visitorResult, msCacheExpiryTime);
+      }
+      setVisitorCount(visitorResult);
     };
 
-    const getGamesPlayedCount = async () => {
-      const count = await fetchGamesPlayedCount();
-      setGamesPlayedCount(count);
-      setItem(PLAYEDGAMESKEY, {
-        ...(getItem(PLAYEDGAMESKEY) ?? null),
-        playerCount: count,
-        expires: Date.now() + msCacheExpiryTime,
-      });
-    };
-
-    if (hasKey(PLAYEDGAMESKEY)) {
-      const { playerCount, expires } = getItem(PLAYEDGAMESKEY);
-      if (expires > Date.now()) {
-        setGamesPlayedCount(playerCount);
-      } else {
-        getGamesPlayedCount();
-      }
-    } else {
-      getGamesPlayedCount();
-    }
-
-    if (hasKey(VISITORSKEY)) {
-      const { visitorCount, expires } = getItem(VISITORSKEY);
-      if (expires > Date.now()) {
-        setVisitorCount(visitorCount);
-      } else {
-        getVisitorCount();
-      }
-    } else {
-      getVisitorCount();
-    }
+    initializeData();
   }, []);
 
   return (
