@@ -345,17 +345,6 @@ const ParallaxLanding = ({ onZoomComplete }) => {
 
   return (
     <>
-      {isDesktop && showUpdate && (
-        <UpdateOverlay>
-          <span>
-            <span style={{fontWeight: 600}}>Update (07/06/2025): </span>
-            Timer system has been implemented to prevent cheating and previous scores has been wiped.
-          </span>
-          <CloseButton size="small" aria-label="close update" onClick={() => setShowUpdate(false)}>
-            <CloseIcon fontSize="small" />
-          </CloseButton>
-        </UpdateOverlay>
-      )}
       <ImageContainer
         zoom={zoomed}
         hovered={hovered}

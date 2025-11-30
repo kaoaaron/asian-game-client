@@ -415,9 +415,6 @@ const FilterOptions = () => {
               </RadioGroup>
             </OptionContainer>
           </Box>
-          <Typography sx={{ textAlign: "center", maxWidth: "100%" }}>
-            Using the options below will disqualify you from the leaderboard.
-          </Typography>
           <Box>
             <Typography
               variant="h6"
@@ -453,6 +450,9 @@ const FilterOptions = () => {
               </RadioGroup>
             </OptionContainer>
           </Box>
+          <Typography sx={{ textAlign: "center", maxWidth: "100%" }}>
+            Using the options below will disqualify you from the leaderboard.
+          </Typography>
           <Stack
             direction="row"
             spacing={0.5}
