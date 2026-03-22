@@ -1,16 +1,8 @@
 // api.js
-
-// Common headers with API key
-const getHeaders = () => ({
-  'Content-Type': 'application/json',
-  'X-API-Key': process.env.REACT_APP_API_KEY
-});
-
 export const fetchVisitorCount = async () => {
   try {
     const response = await fetch(
-      `${process.env.REACT_APP_ASIAN_API_URL}/visitor-count`,
-      { headers: getHeaders() }
+      `${process.env.REACT_APP_ASIAN_API_URL}/visitor-count`
     );
     const data = await response.json();
     return data.uniqueVisitorCount;
@@ -23,8 +15,7 @@ export const fetchVisitorCount = async () => {
 export const fetchGamesPlayedCount = async () => {
   try {
     const response = await fetch(
-      `${process.env.REACT_APP_ASIAN_API_URL}/game-count`,
-      { headers: getHeaders() }
+      `${process.env.REACT_APP_ASIAN_API_URL}/game-count`
     );
     const data = await response.json();
     return data.count;
@@ -37,8 +28,7 @@ export const fetchGamesPlayedCount = async () => {
 export const fetchTopCountryCodes = async (count) => {
   try {
     const response = await fetch(
-      `${process.env.REACT_APP_ASIAN_API_URL}/topPlayedCountryCodes?count=${count}`,
-      { headers: getHeaders() }
+      `${process.env.REACT_APP_ASIAN_API_URL}/topPlayedCountryCodes?count=${count}`
     );
     const data = await response.json();
     return data;
@@ -51,8 +41,7 @@ export const fetchTopCountryCodes = async (count) => {
 export const fetchVisitorCountHistory = async () => {
   try {
     const response = await fetch(
-      `${process.env.REACT_APP_ASIAN_API_URL}/visitor-count-history`,
-      { headers: getHeaders() }
+      `${process.env.REACT_APP_ASIAN_API_URL}/visitor-count-history`
     );
     const data = await response.json();
     return data;
@@ -71,8 +60,7 @@ export const fetchPeopleData = async (filters) => {
 
   try {
     const response = await fetch(
-      `${process.env.REACT_APP_ASIAN_API_URL}${query}`,
-      { headers: getHeaders() }
+      `${process.env.REACT_APP_ASIAN_API_URL}${query}`
     );
     const data = await response.json();
     return data;
@@ -91,8 +79,7 @@ export const fetchPeopleGroupedData = async (filters) => {
 
   try {
     const response = await fetch(
-      `${process.env.REACT_APP_ASIAN_API_URL}${query}`,
-      { headers: getHeaders() }
+      `${process.env.REACT_APP_ASIAN_API_URL}${query}`
     );
     const data = await response.json();
     return data;
@@ -107,8 +94,7 @@ export const fetchLeaderboardData = async (type) => {
 
   try {
     const response = await fetch(
-      `${process.env.REACT_APP_ASIAN_API_URL}${query}`,
-      { headers: getHeaders() }
+      `${process.env.REACT_APP_ASIAN_API_URL}${query}`
     );
     const data = await response.json();
     return data;
@@ -123,8 +109,7 @@ export const fetchLeaderboardAvailability = async ({ scored, total, type }) => {
 
   try {
     const response = await fetch(
-      `${process.env.REACT_APP_ASIAN_API_URL}${query}`,
-      { headers: getHeaders() }
+      `${process.env.REACT_APP_ASIAN_API_URL}${query}`
     );
     const data = await response.json();
     return data;
@@ -140,7 +125,9 @@ export const saveLeaderboardData = async (data) => {
       `${process.env.REACT_APP_ASIAN_API_URL}/leaderboard`,
       {
         method: "POST",
-        headers: getHeaders(),
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(data),
       }
     );
