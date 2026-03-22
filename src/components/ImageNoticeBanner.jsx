@@ -3,7 +3,7 @@ import { Alert } from "@mui/material";
 
 const ImageNoticeBanner = () => (
   <Alert
-    severity="warning"
+    severity="success"
     variant="filled"
     role="status"
     sx={{
@@ -26,8 +26,7 @@ const ImageNoticeBanner = () => (
       },
     }}
   >
-    We are aware that the images are broken and will need a couple of days to fix
-    this.
+    Broken images have been fixed as of March 22
   </Alert>
 );
 
