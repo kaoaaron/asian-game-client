@@ -12,7 +12,7 @@ import backtree from "../../assets/images/landing/backtree.png";
 import panda from "../../assets/images/landing/panda.png";
 import jiyoung from "../../assets/images/landing/jiyoung.png";
 import embarassed from "../../assets/images/landing/embarassed.png";
-import aaron from "../../assets/images/landing/aaronxmas.png";
+import aaron from "../../assets/images/landing/aaron.png";
 import lefttop from "../../assets/images/landing/lefttop.png";
 import eataaron from "../../assets/images/landing/eataaron.png";
 import leaderboardEaster from "../../assets/images/landing/leaderboardeaster.png";
@@ -24,8 +24,6 @@ import TextSection from "./TextSection";
 import { useNavigate } from "react-router";
 import { useMediaQuery, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import jyxmas from "../../assets/images/landing/jyxmas.png";
-import jiyoungxmas2 from "../../assets/images/landing/jiyoungxmas2.png";
 
 const zoomIn = keyframes`
   from {
@@ -236,34 +234,6 @@ const ImageContainer = styled.div`
     transform: rotate(25deg) translateX(-10%) translateY(10%);
     transition: top 1.5s ease-in-out;
   }
-
-  #jyxmas {
-    z-index: 3;
-    position: absolute;
-    left: 20%;
-    bottom: 20%;
-    width: 20vw;
-    height: auto;
-    transition: transform 1.65s cubic-bezier(0.19,1,0.22,1), opacity 1.5s;
-    will-change: transform, opacity;
-    transform: translateY(50%);
-    opacity: 0;
-  }
-  
-  &.show-jyxmas #jyxmas {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  #jiyoungxmas2 {
-    position: absolute;
-    z-index: 15;
-    left: 68%;
-    top: 56%;
-    height: 26vh;
-    width: auto;
-    pointer-events: none;
-  }
 `;
 
 const UpdateOverlay = styled.div`
@@ -376,7 +346,7 @@ const ParallaxLanding = ({ onZoomComplete }) => {
   return (
     <>
       <ImageContainer
-        className={hovered ? "show-jyxmas" : ""}
+        className=""
         zoom={zoomed}
         hovered={hovered}
         style={{ transformOrigin }}
@@ -401,11 +371,6 @@ const ParallaxLanding = ({ onZoomComplete }) => {
             />
           </>
         )}
-        <img
-              id="jyxmas"
-              src={jyxmas}
-              alt="@jyxmas"
-            />
         <div
           id="multiplayerbuttondiv"
           onMouseEnter={() => setMpHovered(true)}
@@ -446,7 +411,6 @@ const ParallaxLanding = ({ onZoomComplete }) => {
         {(doorOpened || hovered) && (
           <>
             <img src={dooropen} id="panda" alt="Door Open" />
-            <img src={jiyoungxmas2} id="jiyoungxmas2" alt="jiyougnxmas2" />
           </>
         )}
         <img id="rooftop" src={rooftop} alt="Rooftop" />
