@@ -111,7 +111,7 @@ const FilterOptions = () => {
     gender: "both",
     minAge: "0",
     maxAge: "200",
-    mode: "Classic",
+    mode: "Grouped",
   });
   const [ageError, setAgeError] = useState("");
   const [categoryName, setCategoryName] = React.useState([]);
@@ -131,13 +131,18 @@ const FilterOptions = () => {
   };
 
   const getNumberOptions = () => {
-    return localFilters.mode === "New" ? [10, 30] : [10, 30, 50, 100, 150, 200];
+    return [10, 30, 50, 100, 150, 200];
   };
 
   const genderOptions = ["both", "male", "female"];
-  const modeOptions = ["Classic", "New"];
+  const modeOptions = ["Classic", "Grouped"];
   const numberRef = useRef(null);
   const genderRef = useRef(null);
+  
+  const modeTooltips = {
+    "Classic": "Guess the ethnicity of one person at a time given 4 options",
+    "Grouped": "Presented an ethnicity and guess which one of 4 people are that ethnicity"
+  };
 
   const setFilters = useQuizStore((state) => state.setFilters);
   const setScreen = useQuizStore((state) => state.setScreen);
@@ -210,10 +215,10 @@ const FilterOptions = () => {
     if (name === "mode") {
       setLocalFilters((prev) => {
         const newFilters = { ...prev, [name]: value };
-        // Reset numberOfPeople to 10 if current value isn't valid for New mode
+        // Reset numberOfPeople to 10 if current value isn't valid for Grouped mode
         if (
-          value === "New" &&
-          ![10, 30].includes(Number(prev.numberOfPeople))
+          value === "Grouped" &&
+          ![10, 30, 50, 100, 150, 200].includes(Number(prev.numberOfPeople))
         ) {
           newFilters.numberOfPeople = "10";
         }
@@ -441,7 +446,7 @@ const FilterOptions = () => {
                       />
                     }
                     label={
-                      <StyledButtonLabel checked={localFilters.mode === item}>
+                      <StyledButtonLabel checked={localFilters.mode === item} title={modeTooltips[item]}>
                         {item}
                       </StyledButtonLabel>
                     }
