@@ -96,7 +96,7 @@ const QuizScreen = ({ onBack }) => {
   const [timerExpired, setTimerExpired] = useState(false);
   const [correctPersonIndex, setCorrectPersonIndex] = useState(null);
 
-  const isNewMode = filters.mode === "New";
+  const isNewMode = filters.mode === "Grouped";
   const totalQuestions = people.length;
   const currentQuestion = people[currentQuestionIndex];
 

@@ -111,7 +111,7 @@ const FilterOptions = () => {
     gender: "both",
     minAge: "0",
     maxAge: "200",
-    mode: "Grouped",
+    mode: "Classic",
   });
   const [ageError, setAgeError] = useState("");
   const [categoryName, setCategoryName] = React.useState([]);

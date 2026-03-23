@@ -197,7 +197,7 @@ const QuizComplete = ({ score, totalQuestions, scorePercentage, onBack }) => {
   // Check leaderboard qualification
   useEffect(() => {
     async function checkLeaderboardQualification() {
-      const type = filters.mode === "New" ? "new" : "classic";
+      const type = filters.mode === "Grouped" ? "grouped" : "classic";
       
       const res = await fetchLeaderboardAvailability({
         scored: score,
@@ -228,7 +228,7 @@ const QuizComplete = ({ score, totalQuestions, scorePercentage, onBack }) => {
     setSubmitting(true);
     setSubmitError("");
 
-    const type = filters.mode === "New" ? "new" : "classic";
+    const type = filters.mode === "Grouped" ? "grouped" : "classic";
     const res = await saveLeaderboardData({
       name: name.trim(),
       scored: score,
@@ -269,7 +269,7 @@ const QuizComplete = ({ score, totalQuestions, scorePercentage, onBack }) => {
 
   const getScoreTitle = () => {
     const level = getScoreLevel();
-    const isNewMode = filters.mode === "New";
+    const isNewMode = filters.mode === "Grouped";
     const questionCount = totalQuestions;
     
     switch (level) {
@@ -342,7 +342,7 @@ const QuizComplete = ({ score, totalQuestions, scorePercentage, onBack }) => {
 
   const getScoreMessage = () => {
     const level = getScoreLevel();
-    const isNewMode = filters.mode === "New";
+    const isNewMode = filters.mode === "Grouped";
     const questionCount = totalQuestions;
     
     switch (level) {
