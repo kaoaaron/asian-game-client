@@ -4,7 +4,6 @@ import MobileStartScreen from "./components/MobileStartScreen/MobileStartScreen"
 import FilterOptions from "./components/FilterOptions/FilterOptions";
 import QuizScreen from "./components/QuizScreen/QuizScreen";
 import ParallaxLanding from "./components/ParallaxLanding/ParallaxLanding";
-import ImageNoticeBanner from "./components/ImageNoticeBanner";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { fetchPeopleData } from "./api";
 import useQuizStore, { ScreenEnum } from "./store";
@@ -140,7 +139,6 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {screen !== ScreenEnum.QUIZ && <ImageNoticeBanner />}
       {isMobile ? renderMobile() : renderDesktop()}
     </ThemeProvider>
   );
