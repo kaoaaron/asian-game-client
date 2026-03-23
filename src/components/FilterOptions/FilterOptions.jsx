@@ -267,7 +267,7 @@ const FilterOptions = () => {
       }
 
       const data =
-        localFilters.mode === "New"
+        localFilters.mode === "Grouped"
           ? await fetchPeopleGroupedData({
               ...localFilters,
               minAge,
